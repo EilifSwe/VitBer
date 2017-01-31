@@ -1,1 +1,15 @@
-#halveringsmetoden for aa bestemme sigma
+#halveringsmetoden
+def halvering(x1,x2,f): 
+    #skal kun returnere a og b
+    m=(x1+x2)/2
+    if f(m)==0:
+        return x1,x2
+    elif (f(m)*f(x1)<0):
+        x1=x1
+        x2=m
+    elif(f(m)*f(x2)<0):
+        x1=m
+        x2=x2
+    print(f(m))
+    return x1,x2
+ 
