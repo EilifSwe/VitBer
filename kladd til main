@@ -1,15 +1,14 @@
 import numpy as np
+import SpektralDiskretisering as *
 
 
-def temperatur(sigma,A,ua,ub):
+def temperatur(x,my,sigma,ua,ub,A):
     
-    B=spectral_laplace_rhs(x,f,ua,ub,sigma)
+    B=calculate_B_Vector(x,my,sigma,ua,ub)
     
-    y_koord=spectral_laplace(x,f,ua,ub)
+    y=calculate_U_Vector(A,B)
     
-    step_size=x[0]-x[1]
-    
-    u_avg=gjennomsnitt(step_size,y_koord)
+    u_avg=average(x,y)
     
     return u_avg-U_AVG
     
@@ -25,8 +24,8 @@ def mainkladd():
     sig1=5
     sig2=-5
     
-    x=listMaker(a, b, N) #Denne funksjonen genererer liste med x-verdier og finnes i koordinatfilen
-    A=spectral_laplace_lhs(x)
+    x=np.linspace(a,b,N)
+    A=calculate_A_Matrix(x)
     sigma=finn_sigma(sig1,sig2)
     print(sigma)
     
