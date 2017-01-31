@@ -1,21 +1,15 @@
 import numpy as np
 
-#Denne funksjonen forutsetter jevnt fordelte punkter
+def trapes(x, y):
+    N = len(x)
+    I = 0
+    for i in range(0, N-1):
+        I += 0.5*(y[i]+y[i+1])*(x[i]-x[i+1])
+    return I
 
-
-
-def trapes(step_size, y_koord):
-    antall_pkt=len(y_koord)
-    #Bruker minus så vi får riktig vekting av punktene
-    midsum=-y_koord[0]-y_koord[antall_pkt-1]
-    for i in y_koord:
-        midsum+=2*i
-    sum=(step_size/2)*midsum
-    return sum
-    
 #Til å finne gjennomsnittsverdien til funksjonen/snittemp
-def gjennomsnitt(step_size,y_koord):
-    antall_pkt=len(y_koord)
-    intervall=step_size*(antall_pkt-1)
-    return (trapes(step_size, y_koord)/intervall)
+def gjennomsnitt(x, y):
+    N = len(x)
+    intervall = x[N-1] - x[0]
+    return trapes(x, y) / intervall
     
