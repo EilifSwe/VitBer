@@ -31,8 +31,12 @@ def ddLagrange(x, i, k):
     
     return ans
 
+def func(my, sigma, x):
+    return np.exp(-((x-my)**2)/sigma)
+    
+    
 # set up the LHS (left hand side) for the spectral method for Laplace eqn
-def spectral_laplace_lhs(x):
+def calculate_A_Matrix(x):
     N = len(x)
     a,b = x[0],x[N-1]
     A = np.zeros((N,N))
@@ -43,12 +47,11 @@ def spectral_laplace_lhs(x):
     for row in range(1, N-1):
         for col in range(0, N):
             A[row][col] = -ddLagrange(x, col, row)
-    print(A)
     
     return A
 
 # set up the RHS (right hand side) for the spectral method for Laplace eqn
-def spectral_laplace_rhs(x,f,ua,ub):
+def calculate_B_Vector(x, my, sigma, ua, ub):
     N = len(x)
     a,b = x[0],x[N-1]
     B = np.zeros(N)
@@ -56,37 +59,9 @@ def spectral_laplace_rhs(x,f,ua,ub):
     B[0] = ua
     B[N-1] = ub
     for i in range(1, N-1):
-        B[i] = f(x[i])
-    print (B)
+        B[i] = func(my, sigma, x[i])
     return B
 
 # set up the spectral method for Laplace eqn and solve the resulting system
-def spectral_laplace(x,f,ua,ub):
-    A = spectral_laplace_lhs(x)
-    B = spectral_laplace_rhs(x,f,ua,ub)
-    # solve the system
+def calculate_U_Vector(A, B):
     return np.linalg.solve(A,B)
-
-def printPoints(x, y):
-    for i in range(0, len(x)):
-        print("(", x[i], ",", y[i], "),", end="")
-    print()    
-    
-
-def run():
-    N = 20
-    a = 0
-    b = 5
-    ua = 0
-    ub = 0
-    my = 2.0
-    sigma = 1.0
-    
-    x_uniform = np.linspace(a,b,N)
-    x_cheby = (b+a)/2. + (a-b)/2. * np.cos(np.arange(N)*np.pi/(N-1))
-
-    print(x_uniform)
-    y = spectral_laplace(x_uniform, lambda x : np.exp(-((x-my)**2)/sigma), ua, ub)
-    printPoints(x_uniform, y)
-
-run()
