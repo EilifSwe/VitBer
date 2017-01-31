@@ -1,0 +1,33 @@
+import numpy as np
+
+
+def temperatur(sigma,A,ua,ub):
+    
+    B=spectral_laplace_rhs(x,f,ua,ub,sigma)
+    
+    y_koord=spectral_laplace(x,f,ua,ub)
+    
+    step_size=x[0]-x[1]
+    
+    u_avg=gjennomsnitt(step_size,y_koord)
+    
+    return u_avg-U_AVG
+    
+#Denne funksjonen skal ta inn en sigma og returnere u_avg-U_AVG
+
+def mainkladd():
+    a=0 #Startpunkt
+    b=10  #Sluttpunkt
+    N=100  #Antall punkter
+    ua=5 #a Temp
+    ub=5 #b Temp
+    my=2
+    sig1=5
+    sig2=-5
+    
+    x=listMaker(a, b, N) #Denne funksjonen genererer liste med x-verdier og finnes i koordinatfilen
+    A=spectral_laplace_lhs(x)
+    sigma=finn_sigma(sig1,sig2)
+    print(sigma)
+    
+mainkladd()
