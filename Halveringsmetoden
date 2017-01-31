@@ -12,4 +12,10 @@ def halvering(x1,x2,f):
         x2=x2
     print(f(m))
     return x1,x2
- 
+    
+def finn_sigma(x1,x2):
+    
+    while (abs(x2-x1)<1*e^(-1)):
+        x1,x2=halvering(x1,x2,temperatur)
+    
+    return (x1+x2)/2
