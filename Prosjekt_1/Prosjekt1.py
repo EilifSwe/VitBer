@@ -14,6 +14,8 @@ import Parametere as par
 #Funksjonen fra diff likningen til u
 def func(sigma, x):
     return np.exp(-((x-par.my)**2)/sigma**2)
+def func2(sigma, x):
+    return -np.exp(x)*(np.cos(8*np.pi*x)-16*np.pi*np.sin(8*np.pi*x)-64*(np.pi)**2*np.cos(8*np.pi*x))
 
 
 #Denne funksjonen skal ta inn en sigma og returnere u_avg-U_AVG
