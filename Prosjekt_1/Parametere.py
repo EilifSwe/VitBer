@@ -1,4 +1,5 @@
 #Variabler
+import numpy as np
 a=0 #Startpunkt
 b=10  #Sluttpunkt
 N=20  #Antall punkter

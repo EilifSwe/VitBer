@@ -16,13 +16,13 @@ def halvering(sLow,sHigh,f, x, A):
     elif (f(x, sMid, A)*f(x, sLow, A)<0):
         sLow = sLow
         sHigh = sMid
-    elif(f(x, m, A)*f(x, x2, A)<0):
+    elif(f(x, sMid, A)*f(x, sHigh, A)<0):
         sLow = sMid
         sHigh = sHigh
     return sLow, sHigh
 
-def finn_sigma(sigmaLow, sigmaHigh, temp, x, A):
-    while (abs(sigmaHig-x1)>par.TOL):
-        x1,x2=halvering(x1,x2,temp, x, A)
+def finn_sigma(sLow, sHigh, temp, x, A):
+    while (abs(sHigh-sLow)>par.TOL):
+        sLow, sHigh=halvering(sLow,sHigh,temp, x, A)
         
-    return (x1+x2)/2
+    return (sLow+sHigh)/2

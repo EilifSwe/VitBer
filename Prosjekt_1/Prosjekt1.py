@@ -17,7 +17,6 @@ def func(sigma, x):
 def func2(sigma, x):
     return -np.exp(x)*(np.cos(8*np.pi*x)-16*np.pi*np.sin(8*np.pi*x)-64*(np.pi)**2*np.cos(8*np.pi*x))
 
-
 #Denne funksjonen skal ta inn en sigma og returnere u_avg-U_AVG
 def temperatur(x,sigma,A):
     B=SD.calculate_B_Vector(x,sigma,func)
@@ -28,14 +27,27 @@ def temperatur(x,sigma,A):
 
     return u_avg-par.U_AVG
 
+def error(x,y):
+    return np.max(np.abs(func2(0, x) - y))
 
 def main():
-    x=np.linspace(par.a,par.b,par.N)
+    #x=np.linspace(par.a,par.b,par.N)
+    x = (par.b+par.a)/2. + (par.a-par.b)/2. * np.cos(np.arange(par.N)*np.pi/(par.N-1))
 
     A=SD.calculate_A_Matrix(x)
 
+    '''B = SD.calculate_B_Vector(x, 0, func2)
+    y = SD.calculate_U_Vector(A, B)
+    
+    x1 = np.linspace(par.a, par.b, 1000)
+    
+    plt.plot(x, y)
+    plt.plot(x1, np.exp(x1)*np.cos(8*np.pi*x1))
+    plt.show()'''
+    
+    #print(error(x, y))
     sigma=HM.finn_sigma(par.sig1,par.sig2,temperatur, x, A)
     print(sigma)
-    print(temperatur(x,2.3781657963991165,A))
+    print(temperatur(x,3,A))
 
 main()
