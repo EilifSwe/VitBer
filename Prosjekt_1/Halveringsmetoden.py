@@ -7,23 +7,29 @@ Created on Tue Jan 31 14:00:21 2017
 #halveringsmetoden
 import Parametere as par
 
-def halvering(sLow,sHigh,f, x, A): 
+def halvering(sLow,sHigh,f, x, A, fLow,fHigh): 
     
     sMid=(sLow+sHigh)/2 #midtpunktet
-    if f(x, sMid, A)==0:
-        return sLow, sHigh
-
-    elif (f(x, sMid, A)*f(x, sLow, A)<0):
-        sLow = sLow
+    fMid=f(x, sMid, A) #funksjonsverdi i midtpunktet
+    if fMid==0:
+        return sMid, sMid, fLow, fHigh
+    
+    elif(fMid*fLow < 0):
         sHigh = sMid
-    elif(f(x, sMid, A)*f(x, sHigh, A)<0):
+        fHigh=fMid #Denne verdien skal oppdateres
+        
+    elif(fMid*fHigh<0):
         sLow = sMid
-        sHigh = sHigh
-    return sLow, sHigh
+        fLow=fMid #Denne verdien skal oppdateres
+    
+    return sLow, sHigh, fLow, fHigh
 
 def finn_sigma(sLow, sHigh, temp, x, A):
+    fLow=temp(x, sLow, A)
+    fHigh=temp(x,sHigh,A)
+    fHigh=-100
     while (abs(sHigh-sLow)>par.TOL):
-        sLow, sHigh=halvering(sLow,sHigh,temp, x, A)
-        print("Sigma: ", sLow, sHigh)
+        sLow, sHigh,fLow,fHigh=halvering(sLow,sHigh,temp, x, A,fLow,fHigh)
+        #print("Sigma: ", sLow, sHigh)
         
     return (sLow+sHigh)/2
