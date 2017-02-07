@@ -24,5 +24,6 @@ def halvering(sLow,sHigh,f, x, A):
 def finn_sigma(sLow, sHigh, temp, x, A):
     while (abs(sHigh-sLow)>par.TOL):
         sLow, sHigh=halvering(sLow,sHigh,temp, x, A)
+        print("Sigma: ", sLow, sHigh)
         
     return (sLow+sHigh)/2
