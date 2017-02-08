@@ -19,7 +19,6 @@ def trapezoid(x, y):
 def average(x, y):
     N = len(x)
     intervall = x[N-1] - x[0]
-    print(trapezoid(x, y))
     return trapezoid(x, y) / intervall
     
     

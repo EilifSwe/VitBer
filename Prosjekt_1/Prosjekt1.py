@@ -14,6 +14,8 @@ import Parametere as par
 #Funksjonen fra diff likningen til u
 def func(sigma, x):
     return np.exp(-((x-par.my)**2)/sigma**2)
+    
+#Funksjon og andre deriverte for test av spektraldiskretisering
 def func2(sigma, x):
     return -np.exp(x)*(np.cos(8*np.pi*x)-16*np.pi*np.sin(8*np.pi*x)-64*(np.pi)**2*np.cos(8*np.pi*x))
 def func3(x):
@@ -25,19 +27,31 @@ def temperatur(x,sigma,A):
     y=SD.calculate_U_Vector(A,B)
     
     u_avg=NI.average(x,y)
-    #print("u_avg:", u_avg)
 
     return u_avg-par.U_AVG
 
 
 def main():
-    #x=np.linspace(par.a,par.b,par.N)
     x = (par.b+par.a)/2. + (par.a-par.b)/2. * np.cos(np.arange(par.N)*np.pi/(par.N-1))
     A=SD.calculate_A_Matrix(x)
 
     sigma=HM.finn_sigma(par.sig1,par.sig2,temperatur, x, A)
-    print(sigma)
-    print(temperatur(x,2.373399719595909,A))
+    print("Sigma: ", sigma)
+    print("Error: ", np.abs(temperatur(x,2.373399719595909,A)))
+    
+    #plotHeatSource(sigma)
+    plotTempProfile(sigma, A, x)
+    
+def plotHeatSource(sigma):
+    x = np.linspace(0, 10, 200)
+    plt.plot(x, func(sigma, x))
+    plt.show()
+    
+def plotTempProfile(sigma, A, x):
+    B=SD.calculate_B_Vector(x,sigma,func)
+    y=SD.calculate_U_Vector(A,B)
+    plt.plot(x, y)
+    plt.show()
     
 def error_func(x, y):
     max = 0
@@ -48,7 +62,7 @@ def error_func(x, y):
     return max
     
 def run_error():
-    N_max = 40
+    N_max = 50
     
     N_array = np.linspace(2,N_max,N_max-1)
     e_array_un = [0]*(N_max-1)
@@ -82,7 +96,5 @@ def run_error():
     plt.show()
     
     
-run_error()
-#main()
-
-#print(error([0.0,0.5,1.0],[1.0,2.0,3.0]))
+#run_error()
+main()

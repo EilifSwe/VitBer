@@ -28,8 +28,13 @@ def finn_sigma(sLow, sHigh, temp, x, A):
     fLow=temp(x, sLow, A)
     fHigh=temp(x,sHigh,A)
     fHigh=-100
+    
+    iterations = 0
+    
     while (abs(sHigh-sLow)>par.TOL):
         sLow, sHigh,fLow,fHigh=halvering(sLow,sHigh,temp, x, A,fLow,fHigh)
-        #print("Sigma: ", sLow, sHigh)
+        iterations += 1
+    
+    print("Iterasjoner: ", iterations)
         
     return (sLow+sHigh)/2
