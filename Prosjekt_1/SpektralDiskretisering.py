@@ -53,13 +53,13 @@ def calculate_A_Matrix(x):
 
 # set up the RHS (right hand side) for the spectral method for Laplace eqn
 
-def calculate_B_Vector(x, sigma, f):
+def calculate_B_Vector(x, ua, ub, sigma, f):
     N = len(x)
     a,b = x[0],x[N-1]
     B = np.zeros(N)    
 
-    B[0] = par.ua
-    B[N-1] = par.ub
+    B[0] = ua
+    B[N-1] = ub
     for i in range(1, N-1):
         B[i] = -f(sigma, x[i]) #minus her.
 

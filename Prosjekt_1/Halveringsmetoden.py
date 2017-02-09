@@ -25,3 +25,15 @@ def finn_sigma(sLow, sHigh, temp, x, A):
     while (abs(sHigh-sLow)>par.TOL): #Her kjøres halveringsmetoden helt til akseptabel sigma er funnet
         sLow, sHigh,fLow,fHigh=halvering(sLow,sHigh,temp, x, A,fLow,fHigh)
     return (sLow+sHigh)/2
+    
+def finn_sigma_newton(startSigma, x, A, f, df):
+    lastSigma = startSigma
+    sigma = 10000
+    
+    while(abs(sigma-lastSigma)>par.TOL):
+        sigma = lastSigma - f(x, lastSigma, A)/df(x, lastSigma, A)
+        print(sigma)
+        lastSigma, sigma = sigma, lastSigma
+    
+    error = abs(sigma-lastSigma)
+    return sigma, error
