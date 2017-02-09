@@ -1,40 +1,27 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jan 31 14:00:21 2017
-@author: julie
-"""
-
-#halveringsmetoden
 import Parametere as par
 
 def halvering(sLow,sHigh,f, x, A, fLow,fHigh): 
+#sLow og sHigh er gjetninger på sigma, fLow og fHigh er funksjonsverdien for gjetningene.
     
     sMid=(sLow+sHigh)/2 #midtpunktet
     fMid=f(x, sMid, A) #funksjonsverdi i midtpunktet
     if fMid==0:
         return sMid, sMid, fLow, fHigh
     
-    elif(fMid*fLow < 0):
-        sHigh = sMid
-        fHigh=fMid #Denne verdien skal oppdateres
+    elif(fMid*fLow < 0): #Nullpunktet finnes i det venstre intervallet
+        sHigh = sMid 
+        fHigh=fMid
         
-    elif(fMid*fHigh<0):
+    elif(fMid*fHigh<0): #Nullpunktet finnes i det høyre intervallet
         sLow = sMid
-        fLow=fMid #Denne verdien skal oppdateres
+        fLow=fMid
     
-    return sLow, sHigh, fLow, fHigh
+    return sLow, sHigh, fLow, fHigh #Returnerer funksjonsverdier for gjenbruk til neste iterasjon
 
 def finn_sigma(sLow, sHigh, temp, x, A):
-    fLow=temp(x, sLow, A)
+    fLow=temp(x, sLow, A) #Funksjonsverdier til initielle gjetninger
     fHigh=temp(x,sHigh,A)
-    fHigh=-100
     
-    iterations = 0
-    
-    while (abs(sHigh-sLow)>par.TOL):
+    while (abs(sHigh-sLow)>par.TOL): #Her kjøres halveringsmetoden helt til akseptabel sigma er funnet
         sLow, sHigh,fLow,fHigh=halvering(sLow,sHigh,temp, x, A,fLow,fHigh)
-        iterations += 1
-    
-    print("Iterasjoner: ", iterations)
-        
     return (sLow+sHigh)/2
