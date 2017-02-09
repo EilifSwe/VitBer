@@ -1,7 +1,7 @@
 #Variabler
 import numpy as np
 
-#Del 1: Parametere for å verifisere koden seksjon 3 av koden.
+#Del 1: Parametere for å verifisere koden seksjon 3 av prosjektet.
 '''
 a=0 #Startpunkt
 b=1  #Sluttpunkt
