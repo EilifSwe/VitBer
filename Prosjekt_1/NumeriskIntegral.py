@@ -1,13 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jan 31 13:59:42 2017
-@author: julie
-"""
-
 import numpy as np
 import Parametere as par
 
-
+#Bruker trapesmetoden. x er en liste med N punkter. y er U-matrisen.
 def trapezoid(x, y):
     N = len(x)
     I = 0
@@ -15,7 +9,7 @@ def trapezoid(x, y):
         I += 0.5*(y[i]+y[i+1])*(x[i+1]- x[i])
     return I
 
-#Til å finne gjennomsnittsverdien til funksjonen/snittemp
+#Til å finne gjennomsnittsverdien til funksjonen(snittemperatur)
 def average(x, y):
     N = len(x)
     intervall = x[N-1] - x[0]
