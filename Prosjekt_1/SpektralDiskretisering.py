@@ -1,12 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jan 31 13:58:43 2017
-@author: julie
-"""
-
 import numpy as np
 import Parametere as par
-
 
 #Double derivative of the i-th lagrange polynomial in x_k
 
