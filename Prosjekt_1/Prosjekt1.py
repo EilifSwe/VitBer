@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Jan 31 13:55:44 2017
-@author: julie
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 import SpektralDiskretisering as SD
@@ -15,29 +10,32 @@ import Parametere as par
 def func(sigma, x):
     return np.exp(-((x-par.my)**2)/sigma**2)
     
-#Funksjon og andre deriverte for test av spektraldiskretisering
+#Dobbeltderiverte for test av spektraldiskretisering
 def func2(sigma, x):
     return -np.exp(x)*(np.cos(8*np.pi*x)-16*np.pi*np.sin(8*np.pi*x)-64*(np.pi)**2*np.cos(8*np.pi*x))
+#Selve funksjonen for test av spektraldisktretisering
 def func3(x):
     return np.exp(x)*np.cos(8*np.pi*x)
 
 #Denne funksjonen skal ta inn en sigma og returnere u_avg-U_AVG
 def temperatur(x,sigma,A):
-    B=SD.calculate_B_Vector(x,sigma,func)
-    y=SD.calculate_U_Vector(A,B)
+    B=SD.calculate_B_Vector(x,sigma,func) #Beregner B-vektoren.
+    y=SD.calculate_U_Vector(A,B) #Beregner U-vektorenen.
     
-    u_avg=NI.average(x,y)
+    u_avg=NI.average(x,y) #Beregner gjennomsnittsverdien for temperaturen
 
-    return u_avg-par.U_AVG
+    return u_avg-par.U_AVG #Returnerer differansen mellom vår u-verdi og oppgitt U-verdi.
 
 
 def main():
-    x = (par.b+par.a)/2. + (par.a-par.b)/2. * np.cos(np.arange(par.N)*np.pi/(par.N-1))
-    A=SD.calculate_A_Matrix(x)
-
-    sigma=HM.finn_sigma(par.sig1,par.sig2,temperatur, x, A)
-    print("Sigma: ", sigma)
-    print("Error: ", np.abs(temperatur(x,2.373399719595909,A)))
+    x = (par.b+par.a)/2. + (par.a-par.b)/2. * np.cos(np.arange(par.N)*np.pi/(par.N-1)) #Lager N chebyshevfordelte punkter.
+    A=SD.calculate_A_Matrix(x) #Beregner A-matrisen.
+    
+    #Finner sigmaverdien vha. funksjon med gjettede sigmaverdier,
+    #temperaturfunksjonen og A-matrisa.
+    sigma=HM.finn_sigma(par.sig1,par.sig2,temperatur, x, A) 
+    print("Sigma: ", sigma) 
+    print("Error: ", np.abs(temperatur(x,sigma,A))) #Skriver ut temperaturen
     
     #plotHeatSource(sigma)
     plotTempProfile(sigma, A, x)
