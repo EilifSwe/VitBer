@@ -53,34 +53,43 @@ def main():
     print("Error: ", np.abs(temperatur(x,sigma,A))) #Skriver ut temperaturen
     
     #Kjoer disse funksjonene for a plotte de repektive grafene
-    #plotHeatSource(sigma)
-    plotTempProfile(sigma, A, x)
+    plotHeatSource(sigma)
+    #plotTempProfile(sigma, A, x)
     
 #Plotting av varmekilde f(x) for beregnet sigma
 def plotHeatSource(sigma):
     x = np.linspace(0, 10, 200)
-    plt.plot(x, func1(sigma, x))
+    plt.plot(x, func1(sigma, x), label = "$f(x;\sigma)=e^{-(x-\mu)^2/\sigma^2}$")
+    plt.title('Varmekilden $f(x;\sigma)$')
+    plt.xlabel("$x$ (m)")
+    plt.ylabel("Varmekilde (W/m)")
+    plt.axis([0,10,0,1.1])
+    plt.legend()
     plt.show()
     
 #Plotting av temperaturprofilen u(x;sigma)
 def plotTempProfile(sigma, A, x):
     B=SD.calculate_B_Vector(x, par.ua, par.ub, sigma,func1)
     y=SD.calculate_U_Vector(A,B)
-    plt.plot(x, y)
+    plt.title('Temperaturprofil, $u (x;\sigma)$')
+    plt.plot(x, y,label='$u (x;\sigma)$')
+    plt.xlabel('$x$ (m)')
+    plt.ylabel('$T$ (K)')
+    plt.legend()
     plt.show()
     
 #Beregning e_N
 def error_func(x, y):
     max = 0
     for i in range(0, len(x)):
-        val = np.abs(y[i] - func2(x[i]))
+        val = np.abs(y[i] - func2(x[i]))#Differansen mellom den approksimerte funksjonen og testfunksjonen.
         if(val > max):
             max = val
     return max
     
 #Plotter konvergenskurvene
 def run_error():
-    N_max = 50
+    N_max = 40
     
     N_array = np.linspace(2,N_max,N_max-1)
     e_array_un = [0]*(N_max-1)
@@ -90,20 +99,24 @@ def run_error():
         #Uniform
         x=np.linspace(par.a, par.b, N)
         A = SD.calculate_A_Matrix(x)
-        B = SD.calculate_B_Vector(x, par.ua, par.ub, 0, func2)
+        B = SD.calculate_B_Vector(x, par.ua, par.ub, 0, ddfunc2)
         y = SD.calculate_U_Vector(A, B)
         e_array_un[N-1] = error_func(x, y)
         
         #Cheby
         x = (par.b+par.a)/2. + (par.a-par.b)/2. * np.cos(np.arange(N)*np.pi/(N-1))
         A = SD.calculate_A_Matrix(x)
-        B = SD.calculate_B_Vector(x, par.ua, par.ub, 0, func2)
+        B = SD.calculate_B_Vector(x, par.ua, par.ub, 0, ddfunc2)
         y = SD.calculate_U_Vector(A, B)
         e_array_c[N-1] = error_func(x, y)
     
     plt.semilogy()
-    plt.plot(N_array, e_array_un)
-    plt.plot(N_array, e_array_c)
+    plt.title("Konvergenskurver")
+    plt.plot(N_array, e_array_un,label='Uniforme punkter')
+    plt.plot(N_array, e_array_c,label='Chebyshev-punkter')
+    plt.xlabel("Antall punkter $(N)$")
+    plt.ylabel("$e_N$")
+    plt.legend(loc=3)
     plt.show()
     
 
