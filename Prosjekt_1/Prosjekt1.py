@@ -39,31 +39,37 @@ def dtemperatur(x,sigma,A):
 
     return ud_avg
 
+#Beregner sigma verdi
 def main():
     x = (par.b+par.a)/2. + (par.a-par.b)/2. * np.cos(np.arange(par.N)*np.pi/(par.N-1)) #Lager N chebyshevfordelte punkter.
     A=SD.calculate_A_Matrix(x) #Beregner A-matrisen.
     
     #Finner sigmaverdien vha. funksjon med gjettede sigmaverdier,
-    #temperaturfunksjonen og A-matrisa.
+    #Hhv halvveringsmetoden og Newtons metode
     #sigma=HM.finn_sigma(par.sig1,par.sig2,temperatur, x, A)
     sigma, error = HM.finn_sigma_newton(8, x, A, temperatur, dtemperatur)
+    
     print("Sigma: ", sigma) 
     print("Error: ", np.abs(temperatur(x,sigma,A))) #Skriver ut temperaturen
     
+    #Kjoer disse funksjonene for a plotte de repektive grafene
     #plotHeatSource(sigma)
-    #plotTempProfile(sigma, A, x)
+    plotTempProfile(sigma, A, x)
     
+#Plotting av varmekilde f(x) for beregnet sigma
 def plotHeatSource(sigma):
     x = np.linspace(0, 10, 200)
-    plt.plot(x, func(sigma, x))
+    plt.plot(x, func1(sigma, x))
     plt.show()
     
+#Plotting av temperaturprofilen u(x;sigma)
 def plotTempProfile(sigma, A, x):
     B=SD.calculate_B_Vector(x, par.ua, par.ub, sigma,func1)
     y=SD.calculate_U_Vector(A,B)
     plt.plot(x, y)
     plt.show()
     
+#Beregning e_N
 def error_func(x, y):
     max = 0
     for i in range(0, len(x)):
@@ -72,6 +78,7 @@ def error_func(x, y):
             max = val
     return max
     
+#Plotter konvergenskurvene
 def run_error():
     N_max = 50
     
@@ -99,6 +106,8 @@ def run_error():
     plt.plot(N_array, e_array_c)
     plt.show()
     
-    
+
+#Velg funksjonen du vil kjoere, husk a endre parameterlisten 
+
 #run_error()
 main()
