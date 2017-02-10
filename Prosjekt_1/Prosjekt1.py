@@ -1,11 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Feb 10 11:50:10 2017
-
-@author: julie
-"""
-
-# -*- coding: utf-8 -*-
 import numpy as np
 import matplotlib.pyplot as plt
 import SpektralDiskretisering as SD
@@ -96,8 +89,7 @@ def run_error():
     
     N_array = np.linspace(2,N_max,N_max-1)
     e_array_un = [0]*(N_max-1) 
-    e_array_c = [0]*(N_max-1) 
-    #Lager 
+    e_array_c = [0]*(N_max-1)      
     for N in range(2,N_max):
         #Uniform
         x=np.linspace(par.a, par.b, N)
