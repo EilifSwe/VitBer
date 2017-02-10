@@ -1,8 +1,7 @@
 import numpy as np
 import Parametere as par
 
-#Double derivative of the i-th lagrange polynomial in x_k
-
+#Dobelt deriverte av det i-te lagrange polynomet evaluert i x_k
 def ddLagrange(x, i, k):
     ans = 0
     if i == k:
@@ -33,8 +32,7 @@ def ddLagrange(x, i, k):
     return ans
 
 
-# set up the LHS (left hand side) for the spectral method for Laplace eqn
-
+#Funksjon for a kalkulere A matrisen
 def calculate_A_Matrix(x):
     N = len(x)
     a,b = x[0],x[N-1]
@@ -49,10 +47,7 @@ def calculate_A_Matrix(x):
 
     return A
 
-
-
-# set up the RHS (right hand side) for the spectral method for Laplace eqn
-
+#Funksjon for a kalkulere B vektoren
 def calculate_B_Vector(x, ua, ub, sigma, f):
     N = len(x)
     a,b = x[0],x[N-1]
@@ -61,12 +56,10 @@ def calculate_B_Vector(x, ua, ub, sigma, f):
     B[0] = ua
     B[N-1] = ub
     for i in range(1, N-1):
-        B[i] = -f(sigma, x[i]) #minus her.
+        B[i] = -f(sigma, x[i])
 
     return B
 
-
-# set up the spectral method for Laplace eqn and solve the resulting system
-
+#Funksjon for a kalkulere U vektoren
 def calculate_U_Vector(A, B):
-    return np.linalg.solve(A,B)
+    return np.linalg.solve(A,B) #Loeser likningsystemet AU=B
