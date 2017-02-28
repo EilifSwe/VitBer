@@ -45,7 +45,7 @@ A=makeAMatrix(beta,4)
 printMatrix(A)
 
 def makeUVector(N,a): #N antall kroker, a = alfa
-    print(a*np.array([-a,-0.5*a,-a/6,-a/24]*N))
+    print(np.array([-a,-0.5*a,-a/6,-a/24]*N))
     
 makeUVector(4,2)
 
