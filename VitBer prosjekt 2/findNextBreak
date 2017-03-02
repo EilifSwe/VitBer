@@ -1,0 +1,11 @@
+def findNextBreak(t_list, beta, x_vector):
+    nextBreak=0
+    max_r=0
+    for i in range(len(t_list)):
+        #Iterates through all the hooks and finds the biggest r-value
+        r=x_vector[4*i+3]*beta[i]/t_list[i]
+        if (-r)>max_r:
+            max_r=-r
+            nextBreak=i
+    return nextBreak
+    #Returns the index of the next hook that breaks
