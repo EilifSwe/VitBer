@@ -1,4 +1,5 @@
 import numpy as np
+import random as r
 import matplotlib.pyplot as plt
 
 def makeAMatrix(N, beta): #beta er liste med betaverdier og N er antall kroker
@@ -7,26 +8,26 @@ def makeAMatrix(N, beta): #beta er liste med betaverdier og N er antall kroker
     Left_square = np.array([[6.0,0,0,0],[0,2,0,0],[0,0,1,0],[0,0,0,1]])
     Right_square = np.array([[-6.0,0,0,0],[-6,-2,0,0],[-3,-2,-1,0],[-1,-1,-1,-1]])
     
-    for i in range(N):
-        j = (i + 1) % N
+    for i in range(0, N):
+        j = (i + N - 1) % N
         #Venstre blokk
-        A[4*i][4*i]=6
-        A[4*i+1][4*i]=6
-        A[4*i+1][4*i+1]=2
-        A[4*i+2][4*i]=3
-        A[4*i+2][4*i+1]=2
-        A[4*i+2][4*i+2]=1
-        A[4*i+3][4*i]=1
-        A[4*i+3][4*i+1]=1
-        A[4*i+3][4*i+2]=1
-        A[4*i+3][4*i+3]=1
+        A[4*i][4*j]=6
+        A[4*i+1][4*j]=6
+        A[4*i+1][4*j+1]=2
+        A[4*i+2][4*j]=3
+        A[4*i+2][4*j+1]=2
+        A[4*i+2][4*j+2]=1
+        A[4*i+3][4*j]=1
+        A[4*i+3][4*j+1]=1
+        A[4*i+3][4*j+2]=1
+        A[4*i+3][4*j+3]=1
         
         #Høyre blokk
-        A[4*i][4*j]=-6
-        A[4*i][4*j+3]=-beta[j]
-        A[4*i+1][4*j+1]=-2
-        A[4*i+2][4*j+2]=-1
-        A[4*i+3][4*j+3]=-1
+        A[4*i][4*i]=-6
+        A[4*i][4*i+3]=-beta[i]
+        A[4*i+1][4*i+1]=-2
+        A[4*i+2][4*i+2]=-1
+        A[4*i+3][4*i+3]=-1
     return A
 
 def makeUVector(N,a): #N antall kroker, a = alfa
@@ -39,10 +40,10 @@ def printMatrix(A):
     for i in range(len(A)):
         print (A[i])
         
-def updateAMatrix(beta,A):
+def updateAMatrix(beta,A, N):
     for i in range(N):
         A[4*i][4*i+3]=beta[i]
-    return A
+    
     
 def eta(ksi, xArray, alpha):
     k = int(np.floor(ksi))
@@ -67,7 +68,7 @@ def dddEta(ksi, xArray, alpha):
     return -alpha*x + 6*xArray[4*k]
     
 def plotEta(nr, N, xArray, alpha):
-    ksi = np.linspace(0, N - 0.001, 1000)
+    ksi = np.linspace(0, N - 0.00001, 1000)
     etaArray = []
     
     func = None
@@ -87,16 +88,38 @@ def plotEta(nr, N, xArray, alpha):
     plt.plot(ksi, etaArray)
     plt.show()
     
+def findNextBreak(t_list, beta, x_vector):
+    nextBreak=0
+    max_r=0
+    for i in range(len(t_list)):
+        #Iterates through all the hooks and finds the biggest r-value
+        r=-x_vector[4*i+3]*beta[i]/t_list[i]
+        if (r)>max_r:
+            max_r=r 
+            nextBreak=i
+        #print(-r, i)
+    return nextBreak, max_r
+    #Returns the index of the next hook that breaks and corresponding max_r
+
+def make_t_list(N, limit):
+    t_list=np.zeros(N)
+    for i in range(len(t_list)):
+        t_list[i]=r.random()*limit
+    return t_list
+    
 
 #Main
 def main():
-    N = 10
+    N = 3
     beta=53.05*np.ones(N)
-    beta[4] = 30
+    
+    
     print(beta)
     alpha = 10
     
     A = makeAMatrix(N, beta)
+    beta[1] = 0
+    updateAMatrix(beta, A, N)
     printMatrix(A)
     U = makeUVector(N, alpha)
 
@@ -104,4 +127,29 @@ def main():
     print(X)
     plotEta(0, N, X, alpha)
     
+    
+def plotAlpha():
+    N = 10
+    beta = 53.05*np.ones(N)
+    tList = make_t_list(N, 0.04)
+    A = makeAMatrix(N, beta)
+    U = makeUVector(N, 1)
+    
+    alpha = np.zeros(N)
+    iteration = range(N)
+    
+    for k in range(0, N):
+        xRef = calculateXVector(A, U)
+        plotEta(0,N,xRef, 1)
+        betaIndex, rValue = findNextBreak(tList, beta, xRef)
+       # print(betaIndex, rValue)
+        alpha[k] = beta[betaIndex] / rValue
+        beta[1] = 0
+        updateAMatrix(beta, A, N)
+    
+    plt.plot(iteration, alpha)
+    plt.show()
+    
+    
 main()
+#plotAlpha()
