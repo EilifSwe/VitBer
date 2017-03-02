@@ -42,7 +42,7 @@ def printMatrix(A):
         
 def updateAMatrix(beta,A, N):
     for i in range(N):
-        A[4*i][4*i+3]=beta[i]
+        A[4*i][4*i+3]=-beta[i]
     
     
 def eta(ksi, xArray, alpha):
@@ -110,16 +110,16 @@ def make_t_list(N, limit):
 
 #Main
 def main():
-    N = 3
+    N = 10
     beta=53.05*np.ones(N)
-    
+    beta[2] = 0
     
     print(beta)
     alpha = 10
     
     A = makeAMatrix(N, beta)
-    beta[1] = 0
-    updateAMatrix(beta, A, N)
+    #beta[2] = 0
+    #updateAMatrix(beta, A, N)
     printMatrix(A)
     U = makeUVector(N, alpha)
 
@@ -129,7 +129,8 @@ def main():
     
     
 def plotAlpha():
-    N = 10
+    N = 100
+    M = 100
     beta = 53.05*np.ones(N)
     tList = make_t_list(N, 0.04)
     A = makeAMatrix(N, beta)
@@ -138,18 +139,23 @@ def plotAlpha():
     alpha = np.zeros(N)
     iteration = range(N)
     
-    for k in range(0, N):
-        xRef = calculateXVector(A, U)
-        plotEta(0,N,xRef, 1)
-        betaIndex, rValue = findNextBreak(tList, beta, xRef)
-       # print(betaIndex, rValue)
-        alpha[k] = beta[betaIndex] / rValue
-        beta[1] = 0
+    for i in range(M):
+        beta = 53.05*np.ones(N)
         updateAMatrix(beta, A, N)
+        tList = make_t_list(N, 0.04)
+        for k in range(0, N):
+            xRef = calculateXVector(A, U)
+            # plotEta(0,N,xRef, 1)
+            betaIndex, rValue = findNextBreak(tList, beta, xRef)
+            # print(betaIndex, rValue)
+            alpha[k] += beta[betaIndex] / rValue
+            #print(betaIndex, alpha[k])
+            beta[betaIndex] = 0
+            updateAMatrix(beta, A, N)
     
-    plt.plot(iteration, alpha)
+    plt.plot(iteration, alpha/M)
     plt.show()
     
     
-main()
-#plotAlpha()
+#main()
+plotAlpha()
