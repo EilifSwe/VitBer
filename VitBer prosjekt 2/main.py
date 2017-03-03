@@ -87,6 +87,46 @@ def plotEta(nr, N, xArray, alpha):
     
     plt.plot(ksi, etaArray)
     plt.show()
+
+def plotSubEta(nr,N,xArray,alpha):
+    
+    fig_solution = plt.figure(figsize=(15,10))
+    
+    ax_y = fig_solution.add_subplot(411)
+    plt.setp(ax_y.get_xticklabels(), visible=False)
+    plotEta(0, N,xArray, alpha)
+    plt.title("$\eta(\\xi)$",fontsize=20)
+    plt.rcParams['xtick.labelsize'] = 15
+    plt.rcParams['ytick.labelsize'] = 15
+    plt.ylabel("Utslag, ($\eta$)",fontsize=20)
+
+    
+    ax_dy = fig_solution.add_subplot(412, sharex=ax_y)
+    plt.setp(ax_dy.get_xticklabels(), visible=False)
+    plotEta(1, N, xArray, alpha)
+    plt.title("$\eta'(\\xi)$",fontsize=20)
+    plt.rcParams['xtick.labelsize'] = 15
+    plt.rcParams['ytick.labelsize'] = 15
+    plt.ylabel("Utslag, ($\eta$)",fontsize=20)
+                
+    ax_ddy = fig_solution.add_subplot(413, sharex=ax_y)
+    plt.setp(ax_ddy.get_xticklabels(), visible=False)
+    plotEta(2, N, xArray, alpha)
+    plt.title("$\eta''(\\xi)$",fontsize=20)
+    plt.rcParams['xtick.labelsize'] = 15
+    plt.rcParams['ytick.labelsize'] = 15
+    plt.ylabel("Utslag, ($\eta$)",fontsize=20)
+    
+    ax_dddy = fig_solution.add_subplot(414, sharex=ax_y)
+    plotEta(3, N, xArray, alpha)
+    plt.title("$\eta'''(\\xi)$",fontsize=20)
+    plt.rcParams['xtick.labelsize'] = 15
+    plt.rcParams['ytick.labelsize'] = 15
+    plt.xlabel("Krokfordeling, ($\\xi$)",fontsize=20)
+    plt.ylabel("Utslag, ($\eta$)",fontsize=20)
+    
+    plt.tight_layout()
+    plt.savefig("eta_ksi_vitber2.pdf")
     
 def findNextBreak(t_list, beta, x_vector):
     nextBreak=0
