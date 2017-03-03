@@ -107,7 +107,7 @@ def plotSubEta(nr,N,xArray,alpha):
     plt.title("$\eta'(\\xi)$",fontsize=20)
     plt.rcParams['xtick.labelsize'] = 15
     plt.rcParams['ytick.labelsize'] = 15
-    plt.ylabel("Utslag, ($\eta$)",fontsize=20)
+    plt.ylabel("Utslag, ($\eta'$)",fontsize=20)
                 
     ax_ddy = fig_solution.add_subplot(413, sharex=ax_y)
     plt.setp(ax_ddy.get_xticklabels(), visible=False)
@@ -115,15 +115,15 @@ def plotSubEta(nr,N,xArray,alpha):
     plt.title("$\eta''(\\xi)$",fontsize=20)
     plt.rcParams['xtick.labelsize'] = 15
     plt.rcParams['ytick.labelsize'] = 15
-    plt.ylabel("Utslag, ($\eta$)",fontsize=20)
+    plt.ylabel("Utslag, ($\eta''$)",fontsize=20)
     
     ax_dddy = fig_solution.add_subplot(414, sharex=ax_y)
     plotEta(3, N, xArray, alpha)
     plt.title("$\eta'''(\\xi)$",fontsize=20)
     plt.rcParams['xtick.labelsize'] = 15
     plt.rcParams['ytick.labelsize'] = 15
-    plt.xlabel("Krokfordeling, ($\\xi$)",fontsize=20)
-    plt.ylabel("Utslag, ($\eta$)",fontsize=20)
+    plt.xlabel("$k$ (antall kroker), ($\\xi$)",fontsize=20)
+    plt.ylabel("Utslag, ($\eta'''$)",fontsize=20)
     
     plt.tight_layout()
     plt.savefig("eta_ksi_vitber2.pdf")
