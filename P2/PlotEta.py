@@ -4,29 +4,35 @@ import matplotlib.pyplot as plt
 import LinearSystem as LS
 import SystemConstants as SC
 
-def eta(ksi, xArray, alpha):
-    k = int(np.floor(ksi))
-    x = ksi - k
+def eta(k, xArray, alpha):
+    #k = int(np.floor(ksi))
+    #x = ksi - k
+    x=np.linspace(0.0,1.0,200)
+    
     return (((-(alpha / 24.) *x + xArray[4*k])*x + xArray[4*k+1])*x + xArray[4*k+2])*x + xArray[4*k+3]
 
-def dEta(ksi, xArray, alpha):
-    k = int(np.floor(ksi))
-    x = ksi - k
+def dEta(k, xArray, alpha):
+    #k = int(np.floor(ksi))
+    #x = ksi - k
+    x=np.linspace(0.0,1.0,200)
     return ((-(alpha / 6.) *x + 3*xArray[4*k])*x + 2*xArray[4*k+1])*x + xArray[4*k+2]
     
-def ddEta(ksi, xArray, alpha):
-    k = int(np.floor(ksi))
-    x = ksi - k
+def ddEta(k, xArray, alpha):
+   # k = int(np.floor(ksi))
+    #x = ksi - k
+    x=np.linspace(0.0,1.0,200)
     return (-(alpha / 2.) *x + 6*xArray[4*k])*x + 2*xArray[4*k+1]
     
-def dddEta(ksi, xArray, alpha):
-    k = int(np.floor(ksi))
-    x = ksi - k
+def dddEta(k, xArray, alpha):
+   # k = int(np.floor(ksi))
+    #x = ksi - k
+    x=np.linspace(0.0,1.0,200)
     
     return -alpha*x + 6*xArray[4*k]
     
 def plotEta(nr, N, xArray, alpha):
     ksi = np.linspace(0, N - 0.00001, 1000)
+    ksi_1=np.linspace(0.0,1.0,200)
     etaArray = []
     
     func = None
@@ -40,26 +46,10 @@ def plotEta(nr, N, xArray, alpha):
     elif (nr == 3):
         func = dddEta
     
-    for i in ksi:
-        etaArray.append(func(i, xArray, alpha))
-    
-    plt.plot(ksi, etaArray)
+    for k in range(N): #N =number og solution intervals 
+        plt.plot(ksi_1 + k, func(k, xArray, alpha))
 
-#Main
-def main():
-    N = 20
-    beta=53.05*np.ones(N)
-    
-    alpha = 10
-    
-    A = LS.makeAMatrix(N, beta)
-    
-    #updateAMatrix(beta, A, N)
-    #printMatrix(A)
-    U = LS.makeUVector(N, alpha)
 
-    xArray = LS.calculateXVector(A, U)
-    plotSubEta(0, N, xArray, alpha)
     
 def plotSubEta(nr,N,xArray,alpha):
     
@@ -99,4 +89,21 @@ def plotSubEta(nr,N,xArray,alpha):
     plt.ylabel("Utslag, ($\eta'''$)",fontsize=20)
     
     plt.tight_layout()
-    plt.savefig("eta_ksi_vitber2.pdf")
+    plt.savefig("eta_ksi2_vitber2.pdf")
+    
+    #Main
+def main():
+    N = 20
+    beta=53.05*np.ones(N)
+    
+    alpha = 10
+    
+    A = LS.makeAMatrix(N, beta)
+    
+    #updateAMatrix(beta, A, N)
+    #printMatrix(A)
+    U = LS.makeUVector(N, alpha)
+
+    xArray = LS.calculateXVector(A, U)
+    plotSubEta(0, N, xArray, alpha)
+    
