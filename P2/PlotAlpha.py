@@ -25,8 +25,7 @@ def make_t_list(N, limit):
     return t_list
     
 def make_alpha_list(N, M, beta):
-    betaList = beta*np.ones(N)
-    tList = make_t_list(N, SC.maxThreshold)
+    betaList = np.zeros(N)
     A = LS.makeAMatrix(N, betaList)
     U = LS.makeUVector(N, 1)
     
@@ -48,12 +47,37 @@ def make_alpha_list(N, M, beta):
     alpha = alpha/M
     return alpha, betaIndexList
     
-def main(numberOfIterations, numberOfSprings, beta):
+def make_alpha_list_sparse(N, M, beta):
+    betaList = np.zeros(N)
+    A = LS.makeSparseAMatrix(N, betaList)
+    U = LS.makeUVector(N, 1)
+    
+    betaIndexList = np.zeros(N)
+    alpha = np.zeros(N)
+    
+    
+    for i in range(M):
+        betaList = beta*np.ones(N)
+        LS.updateAMatrix(betaList, A, N)
+        tList = make_t_list(N, SC.maxThreshold)
+        for k in range(0, N):
+            xRef = LS.calculateSparseXVector(A, U)
+            betaIndex, rValue = findNextBreak(tList, betaList, xRef)
+            betaIndexList[k] = betaIndex
+            alpha[k] += betaList[betaIndex] / rValue
+            betaList[betaIndex] = 0
+            A[4*betaIndex, 4*betaIndex+3]=-betaList[betaIndex]
+    alpha = alpha/M
+    return alpha, betaIndexList
+    
+def main(numberOfIterations, numberOfSprings, beta, sparse):
     M = numberOfIterations
     N = numberOfSprings
     iteration = np.linspace(0,1,N)
-    
-    alphaList, betaIndexList = make_alpha_list(N, M, beta)
+    if sparse:
+        alphaList, betaIndexList = make_alpha_list_sparse(N, M, beta)
+    else:
+        alphaList, betaIndexList = make_alpha_list(N, M, beta)
     
     plt.plot(iteration, betaIndexList, 'o')
     plt.figure()
