@@ -24,21 +24,18 @@ def make_t_list(N, limit):
         t_list[i]=r.random()*limit
     return t_list
     
-def main(numberOfIterations, numberOfSprings):
-    M = numberOfIterations
-    N = numberOfSprings
-    
-    betaList = SC.beta*np.ones(N)
+def make_alpha_list(N, M, beta):
+    betaList = beta*np.ones(N)
     tList = make_t_list(N, SC.maxThreshold)
     A = LS.makeAMatrix(N, betaList)
     U = LS.makeUVector(N, 1)
     
     betaIndexList = np.zeros(N)
     alpha = np.zeros(N)
-    iteration = np.linspace(0,1,N)
+    
     
     for i in range(M):
-        betaList = SC.beta*np.ones(N)
+        betaList = beta*np.ones(N)
         LS.updateAMatrix(betaList, A, N)
         tList = make_t_list(N, SC.maxThreshold)
         for k in range(0, N):
@@ -48,11 +45,18 @@ def main(numberOfIterations, numberOfSprings):
             alpha[k] += betaList[betaIndex] / rValue
             betaList[betaIndex] = 0
             LS.updateAMatrix(betaList, A, N)
+    alpha = alpha/M
+    return alpha, betaIndexList
+    
+def main(numberOfIterations, numberOfSprings, beta):
+    M = numberOfIterations
+    N = numberOfSprings
+    iteration = np.linspace(0,1,N)
+    
+    alphaList, betaIndexList = make_alpha_list(N, M, beta)
     
     plt.plot(iteration, betaIndexList, 'o')
     plt.figure()
-    plt.plot(iteration, alpha/M)
+    
+    plt.plot(iteration, alphaList)
     plt.show()
-    
-    
-#main()

@@ -44,7 +44,6 @@ def plotEta(nr, N, xArray, alpha):
         etaArray.append(func(i, xArray, alpha))
     
     plt.plot(ksi, etaArray)
-    plt.show()
 
 #Main
 def main():
