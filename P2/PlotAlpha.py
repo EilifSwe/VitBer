@@ -14,7 +14,6 @@ def findNextBreak(t_list, beta, x_vector):
         if r > max_r:
             max_r=r 
             nextBreak=i
-        #print(-r, i)
     return nextBreak, max_r
     #Returns the index of the next hook that breaks and corresponding max_r
 
