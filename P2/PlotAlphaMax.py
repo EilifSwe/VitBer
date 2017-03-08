@@ -10,7 +10,8 @@ def main(numberOfIterations, numberOfSprings, numberOfPoints, betaMin, betaMax):
     alphaMaxList = np.zeros(numberOfPoints)
     
     for i in range(0, numberOfPoints):
-        alphaList = PA.make_alpha_list(numberOfIterations, numberOfSprings, betaList[i])
+        variable=0 
+        alphaList,variable = PA.make_alpha_list(numberOfIterations, numberOfSprings, betaList[i])
         alphaMaxList[i] = np.max(alphaList)
     plt.plot(betaList, alphaMaxList)
     plt.show()
