@@ -24,7 +24,7 @@ def make_t_list(N, limit):
         t_list[i]=r.random()*limit
     return t_list
 
-##---Riktig versjon:
+
 def make_alpha_list(N, M, beta):
     betaList = np.zeros(N)
     A = LS.makeAMatrix(N, betaList)
