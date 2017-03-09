@@ -99,61 +99,17 @@ def main(numberOfIterations, numberOfSprings,beta,sparse):
     plt.plot(iteration, alphaList)
     plt.legend()
     plt.title("Midlere $\\alpha$",fontsize=15)
-    #plt.text(0.7,0.2,r'$\beta=10^-8$',fontsize=15)
+    
+    plt.text(0.7,350000,r'$\beta=10^8$',fontsize=15)
     #plt.text(0.7,0.2,r'$\beta=53.05$',fontsize=15)
-    plt.text(0.7,0.00000000010,r'$\beta=10^-8$',fontsize=15)
+    #plt.text(0.7,0.000007,r'$\beta=10^-3$',fontsize=15)
+    #plt.text(0.7,0.00000000010,r'$\beta=10^-8$',fontsize=15)
     plt.xlabel("$n/N$ Antall iterasjoner",fontsize=15)
     plt.ylabel("$\\alpha$",fontsize=15)
+    
     plt.rcParams['xtick.labelsize'] = 15
     plt.rcParams['ytick.labelsize'] = 15
+    plt.tight_layout()
     plt.savefig("vitber_alpha_prosj2.pdf")
     plt.show()
    ##--------------------------
-'''  
-    
-    M = numberOfIterations
-    N = numberOfSprings
-    
-    betaList = SC.beta*np.ones(N)
-    tList = make_t_list(N, SC.maxThreshold)
-    A = LS.makeAMatrix(N, betaList)
-    U = LS.makeUVector(N, 1)
-    
-    betaIndexMatrix = np.zeros([M,N]) #--> ok
-    alpha = np.zeros(N) 
-    iteration = np.linspace(0,1,N)
-    
-    for i in range(M):
-        betaList = SC.beta*np.ones(N)
-        LS.updateAMatrix(betaList, A, N)
-        tList = make_t_list(N, SC.maxThreshold)
-        for k in range(0, N):
-            xRef = LS.calculateXVector(A, U)
-            betaIndex, rValue = findNextBreak(tList, betaList, xRef)
-            betaIndexMatrix[i,k] = betaIndex
-            alpha[k] += betaList[betaIndex] / rValue
-            betaList[betaIndex] = 0
-            LS.updateAMatrix(betaList, A, N)
-    plt.figure()
-    #figsolution=plt.figure(figsize=(10,8))
-    #ax_y1 = figsolution.add_subplot(211)
-    plt.matshow(betaIndexMatrix)
-    plt.xlabel("n",fontsize=15)
-    plt.ylabel("Antall simuleringer",fontsize=15)
-    #plt.rcParams['xtick.labelsize'] = 15
-    #plt.rcParams['ytick.labelsize'] = 15
-    plt.savefig("simuleringer_vitber2.pdf")
-    
-    plt.figure()
-    #ax_y2 = figsolution.add_subplot(212)
-    #plt.title("Tetthet")
-    plt.plot(iteration, alpha/M)
-    plt.xlabel("n/N Antall iterasjoner",fontsize=15)
-    plt.ylabel("Midlere $\\alpha$",fontsize=15)
-    #plt.rcParams['xtick.labelsize'] = 15
-    #plt.rcParams['ytick.labelsize'] = 15
-    plt.savefig("vitber_alpha_prosj2.pdf")
-    plt.show()
-    '''
-    
-#main()
