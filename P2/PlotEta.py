@@ -128,10 +128,10 @@ def plotEtaAnalytic(N,alpha,beta,xArray):
     #Main
 def main():
     N = 8
-    #beta=53.05*np.ones(N)
-    beta=6000*np.ones(N)
+    beta=53.05*np.ones(N)
+    #beta=0.05*np.ones(N)
     
-    alpha = 10
+    alpha = 1.061
     
     A = LS.makeAMatrix(N, beta)
     
@@ -142,4 +142,5 @@ def main():
     xArray = LS.calculateXVector(A, U)
     #plotSubEta(0, N, xArray, alpha)
     plt.figure()
-    plotEtaAnalytic(4,10,6500,xArray)
+    plotEtaAnalytic(4,alpha,53.05,xArray)
+    #plotEtaAnalytic(4,alpha,0.05,xArray)
