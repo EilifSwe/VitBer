@@ -11,7 +11,7 @@ def main(numberOfIterations, numberOfSprings, numberOfPoints, betaMin, betaMax):
     
     for i in range(0, numberOfPoints):
         var=0
-        alphaList,var = PA.make_alpha_list(numberOfIterations, numberOfSprings, betaList[i])
+        alphaList,var = PA.make_alpha_list(numberOfSprings, numberOfIterations, betaList[i])
         alphaMaxList[i] = np.max(alphaList)
     plt.figure(figsize=(5,3))
     plt.plot(betaList, alphaMaxList)

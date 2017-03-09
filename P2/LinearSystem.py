@@ -42,7 +42,7 @@ def printMatrix(A):
         
 def updateAMatrix(betaList,A, N):
     for i in range(N):
-        A[4*i][4*i+3]=-betaList[i]
+        A[4*i, 4*i+3]=-betaList[i]
 
 
 
