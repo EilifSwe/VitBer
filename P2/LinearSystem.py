@@ -35,19 +35,17 @@ def makeUVector(N,alpha): #N antall kroker, a = alfa
     
 def calculateXVector(A, U):
     return np.linalg.solve(A, U)
-    
-
+        
 def printMatrix(A):
     for i in range(len(A)):
         print (A[i])
         
 def updateAMatrix(betaList,A, N):
     for i in range(N):
-        A[4*i, 4*i+3]=-betaList[i]
+        A[4*i][4*i+3]=-betaList[i]
 
-        
-        
-        
+
+
 #I det følgende løses oppgave 4        
 def calculateSparseXVector(A,U):
     return spsolve(A.tocsc(), U)
@@ -77,10 +75,3 @@ def makeSparseAMatrix(N, beta):
 
 
     return A
-
-    
-
-    
-    
-        
-    

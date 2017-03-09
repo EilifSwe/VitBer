@@ -16,10 +16,10 @@ if __name__ == "__main__":
     if Master_Flag == 'PlotEta':
         PE.main()
     elif Master_Flag == 'PlotAlpha':
-        numberOfIterations = 1
-        numberOfSprings = 1000
+        numberOfIterations = 60
+        numberOfSprings = 80
         beta = SC.beta
-        sparse = False
+        sparse = True
         PA.main(numberOfIterations, numberOfSprings, beta, sparse)
     elif Master_Flag == 'PlotAlphaMax':
         numberOfIterations = 10
@@ -30,8 +30,8 @@ if __name__ == "__main__":
         PAM.main(numberOfIterations, numberOfSprings, numberOfPoints, betaMin, betaMax)
         
 end = timer()
-print("Dette er totaltid: ", end - start) 
-        
+print("Dette er totaltid: ", end - start, "sekunder.")
+
 
 
 

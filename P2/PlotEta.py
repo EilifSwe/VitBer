@@ -47,13 +47,19 @@ def plotEta(nr, N, xArray, alpha):
         func = dddEta
     
     for k in range(N): #N =number og solution intervals 
-        plt.plot(ksi_1 + k, func(k, xArray, alpha))
+        if(k==N-1):
+            lines=plt.plot(ksi_1 + k, func(k, xArray, alpha),label=r'$\eta$ - numerical')
+            plt.setp(lines,color='b',linewidth=2.3)
+        else:
+            lines=plt.plot(ksi_1 + k, func(k, xArray, alpha))
+            plt.setp(lines,color='b',linewidth=2.3)
 
 
     
 def plotSubEta(nr,N,xArray,alpha):
     
     fig_solution = plt.figure(figsize=(15,10))
+    #xi_minus_k=np.linspace(0.0,1.0,200)
     
     ax_y = fig_solution.add_subplot(411)
     plt.setp(ax_y.get_xticklabels(), visible=False)
@@ -62,7 +68,7 @@ def plotSubEta(nr,N,xArray,alpha):
     plt.rcParams['xtick.labelsize'] = 15
     plt.rcParams['ytick.labelsize'] = 15
     plt.ylabel("Utslag, ($\eta$)",fontsize=20)
-
+    plt.grid()
     
     ax_dy = fig_solution.add_subplot(412, sharex=ax_y)
     plt.setp(ax_dy.get_xticklabels(), visible=False)
@@ -71,7 +77,7 @@ def plotSubEta(nr,N,xArray,alpha):
     plt.rcParams['xtick.labelsize'] = 15
     plt.rcParams['ytick.labelsize'] = 15
     plt.ylabel("Utslag, ($\eta'$)",fontsize=20)
-                
+    plt.grid()            
     ax_ddy = fig_solution.add_subplot(413, sharex=ax_y)
     plt.setp(ax_ddy.get_xticklabels(), visible=False)
     plotEta(2, N, xArray, alpha)
@@ -79,6 +85,7 @@ def plotSubEta(nr,N,xArray,alpha):
     plt.rcParams['xtick.labelsize'] = 15
     plt.rcParams['ytick.labelsize'] = 15
     plt.ylabel("Utslag, ($\eta''$)",fontsize=20)
+    plt.grid()
     
     ax_dddy = fig_solution.add_subplot(414, sharex=ax_y)
     plotEta(3, N, xArray, alpha)
@@ -88,13 +95,41 @@ def plotSubEta(nr,N,xArray,alpha):
     plt.xlabel("$k$ (antall kroker), ($\\xi$)",fontsize=20)
     plt.ylabel("Utslag, ($\eta'''$)",fontsize=20)
     
+    plt.grid()
     plt.tight_layout()
     plt.savefig("eta_ksi2_vitber2.pdf")
     
+def plotEtaAnalytic(N,alpha,beta,xArray):
+    plt.figure(figsize=(10,4))
+    for i in range(N):
+        if i==(N-1):
+            x=np.linspace(0+i,1+i,200)
+            etaAnalytic=-(alpha / 24.)*(x-i)**4 + (alpha/12.)*(x-i)**3 + -(alpha/24.)*(x-i)**2 -(alpha/beta)
+            lines=plt.plot(x,etaAnalytic,label=r'$\eta$ - analytical')
+            plt.setp(lines,color='r',linewidth=2.1)
+        else:
+            x=np.linspace(0+i,1+i,200)
+            etaAnalytic=-(alpha / 24.)*(x-i)**4 + (alpha/12.)*(x-i)**3 + -(alpha/24.)*(x-i)**2 -(alpha/beta)
+            lines=plt.plot(x,etaAnalytic)
+            plt.setp(lines,color='r',linewidth=2.1)
+    #lines.set_label("$\eta$ - analytical")
+    
+    plt.title("$\eta(\\xi)$",fontsize=20)
+    plt.rcParams['xtick.labelsize'] = 15
+    plt.rcParams['ytick.labelsize'] = 15
+    plt.xlabel("$k$ (antall kroker), ($\\xi$)",fontsize=20)
+    plt.ylabel("Utslag, ($\eta$)",fontsize=20)
+    lines2=plotEta(0,4,xArray,alpha)
+    #lines2[1].set_label('$\eta$ - analytical')
+    plt.legend()
+    #plt.text(3.35,-0.197,r'$\beta=53.05$',fontsize=15)
+    plt.tight_layout()
+    plt.savefig("etaAnalytic_vitber2.pdf")
     #Main
 def main():
-    N = 20
-    beta=53.05*np.ones(N)
+    N = 8
+    #beta=53.05*np.ones(N)
+    beta=6000*np.ones(N)
     
     alpha = 10
     
@@ -105,5 +140,6 @@ def main():
     U = LS.makeUVector(N, alpha)
 
     xArray = LS.calculateXVector(A, U)
-    plotSubEta(0, N, xArray, alpha)
-    
+    #plotSubEta(0, N, xArray, alpha)
+    plt.figure()
+    plotEtaAnalytic(4,10,6500,xArray)
