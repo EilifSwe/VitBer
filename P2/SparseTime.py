@@ -27,8 +27,10 @@ def main():
     
     plt.plot(numberOfSprings, sparseTime, label="Sparse")
     plt.plot(numberOfSprings, normalTime, label="Normal")
-    plt.legend()
+    plt.legend(loc=2)
+    plt.title("Tidsutvikling for sparse-og normalmatrise.")
     plt.xlabel("Antall kroker",fontsize=15)
     plt.ylabel("Tid(s)",fontsize=15)
+    plt.savefig("SparseTime.pdf")
     plt.show()
     
