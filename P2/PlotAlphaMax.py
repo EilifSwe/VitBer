@@ -16,8 +16,6 @@ def main(numberOfIterations, numberOfSprings, numberOfPoints, betaMin, betaMax):
     plt.plot(betaList, alphaMaxList)
     plt.xlabel("$\\beta$",fontsize=15)
     plt.ylabel("$max_n\\alpha_n$",fontsize=15)
-    #plt.rcParams['xtick.labelsize'] = 12
-    #plt.rcParams['ytick.labelsize'] = 12
     plt.title("E-felt for å løsne polymeren",fontsize=15)
     plt.tight_layout()
     plt.savefig("E_beta_vitber2.pdf")
