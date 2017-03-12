@@ -29,8 +29,7 @@ def make_alpha_list(N, M, beta):
     A = LS.makeAMatrix(N, betaList)
     U = LS.makeUVector(N, 1)
     
-    #betaIndexList = np.zeros(N)
-    betaIndexMatrix=np.zeros([M,N]) #lager en matrise for å få til fargeplottet
+    betaIndexMatrix=np.zeros([M,N])
     alpha = np.zeros(N)
     
     for i in range(M):
@@ -40,20 +39,19 @@ def make_alpha_list(N, M, beta):
         for k in range(0, N):
             xRef = LS.calculateXVector(A, U)
             betaIndex, rValue = findNextBreak(tList, betaList, xRef) 
-            #betaIndexList[k] = betaIndex
             betaIndexMatrix[i,k]=betaIndex
             alpha[k] += betaList[betaIndex] / rValue
             betaList[betaIndex] = 0
             LS.updateAMatrix(betaList, A, N)
     alpha = alpha/M
-    return alpha, betaIndexMatrix #betaIndexList
+    return alpha, betaIndexMatrix
 
 def make_alpha_list_sparse(N, M, beta):
     betaList = np.zeros(N)
     A = LS.makeSparseAMatrix(N, betaList)
     U = LS.makeUVector(N, 1)
     
-    betaIndexMatrix=np.zeros([M,N]) #matrise for å få til fargeplott
+    betaIndexMatrix=np.zeros([M,N])
     alpha = np.zeros(N)
     
     
@@ -64,33 +62,29 @@ def make_alpha_list_sparse(N, M, beta):
         for k in range(0, N):
             xRef = LS.calculateSparseXVector(A, U)
             betaIndex, rValue = findNextBreak(tList, betaList, xRef)
-            
-            betaIndexMatrix[i,k]=betaIndex #legger beta-indeksene i matrisa for hver iterasjon
+            betaIndexMatrix[i,k]=betaIndex
             alpha[k] += betaList[betaIndex] / rValue
             betaList[betaIndex] = 0
             A[4*betaIndex, 4*betaIndex+3]=-betaList[betaIndex]
     alpha = alpha/M
-    return alpha, betaIndexMatrix #betaIndexList
+    return alpha, betaIndexMatrix
     
 
     
 def main(numberOfIterations, numberOfSprings,beta,sparse):
-   ##----------------------
     M = numberOfIterations
     N = numberOfSprings
     iteration = np.linspace(0,1,N)
     if sparse:
-        alphaList, betaIndexMatrix = make_alpha_list_sparse(N, M, beta) #byttet ut list med matrix
+        alphaList, betaIndexMatrix = make_alpha_list_sparse(N, M, beta)
     else:
-        alphaList, betaIndexMatrix = make_alpha_list(N, M, beta) #byttet ut list med Matrix
+        alphaList, betaIndexMatrix = make_alpha_list(N, M, beta)
     
     plt.figure()
-    plt.matshow(betaIndexMatrix) #måte å plotte fargeplottet
+    plt.matshow(betaIndexMatrix)
     plt.xlabel("$k$, kroker",fontsize=15)
     plt.ylabel("Antall simuleringer",fontsize=15)
     plt.title("Rekkefølge når krokene ryker",fontsize=15,y=1.08)
-    #plt.rcParams['xtick.labelsize'] = 15
-    #plt.rcParams['ytick.labelsize'] = 15
     plt.savefig("simuleringer_vitber2.pdf")
     
     plt.figure()
@@ -98,16 +92,15 @@ def main(numberOfIterations, numberOfSprings,beta,sparse):
     plt.legend()
     plt.title("Midlere $\\alpha$",fontsize=15)
     
-    plt.text(0.7,350000,r'$\beta=10^8$',fontsize=15)
+    plt.text(0.7,350000,r'$\beta=10^8$',fontsize=15) #tekst med betaverdier. Plasseres ulikt avh. av betaverdi.
     #plt.text(0.7,0.2,r'$\beta=53.05$',fontsize=15)
     #plt.text(0.7,0.000007,r'$\beta=10^-3$',fontsize=15)
     #plt.text(0.7,0.00000000010,r'$\beta=10^-8$',fontsize=15)
+    
     plt.xlabel("$n/N$ Antall iterasjoner",fontsize=15)
     plt.ylabel("$\\alpha$",fontsize=15)
-    
     plt.rcParams['xtick.labelsize'] = 15
     plt.rcParams['ytick.labelsize'] = 15
     plt.tight_layout()
     plt.savefig("vitber_alpha_prosj2.pdf")
     plt.show()
-   ##--------------------------
