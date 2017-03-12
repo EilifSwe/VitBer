@@ -5,7 +5,7 @@ import SystemConstants as SC
 import PlotAlpha as PA
 
 def main(numberOfIterations, numberOfSprings, numberOfPoints, betaMin, betaMax):
-    betaList = np.linspace(betaMin, betaMax, numberOfPoints)
+    betaList = [np.power(10,i) for i in np.linspace(np.log10(betaMin), np.log10(betaMax), numberOfPoints)]
     alphaMaxList = np.zeros(numberOfPoints)
     
     for i in range(0, numberOfPoints):
@@ -13,7 +13,8 @@ def main(numberOfIterations, numberOfSprings, numberOfPoints, betaMin, betaMax):
         alphaList,var = PA.make_alpha_list(numberOfSprings, numberOfIterations, betaList[i])
         alphaMaxList[i] = np.max(alphaList)
     plt.figure(figsize=(5,3))
-    plt.plot(betaList, alphaMaxList)
+    plt.semilogx(betaList, alphaMaxList)
+    plt.semilogy(betaList,alphaMaxList)
     plt.xlabel("$\\beta$",fontsize=15)
     plt.ylabel("$max_n\\alpha_n$",fontsize=15)
     plt.title("E-felt for å løsne polymeren",fontsize=15)
