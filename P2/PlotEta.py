@@ -91,7 +91,7 @@ def plotSubEta(nr,N,xArray,alpha): #plotter eta numerisk.
     plt.savefig("eta_ksi2_vitber2.pdf")
 
 
-def plotEtaAnalytic(N,alpha,beta,xArray,col,label1): #plotter eta analytisk.
+def plotEtaAnalytic(N,alpha,beta,xArray,col,label1,bool_const): #plotter eta analytisk.
     for i in range(N):
         if i==(N-1): #legger til labelnavn kun på sist krok
             x=np.linspace(0+i,1+i,200)
@@ -109,11 +109,20 @@ def plotEtaAnalytic(N,alpha,beta,xArray,col,label1): #plotter eta analytisk.
     plt.rcParams['ytick.labelsize'] = 15
     plt.xlabel("$k$ (antall kroker), ($\\xi$)",fontsize=20)
     plt.ylabel("Utslag, ($\eta$)",fontsize=20)
-    lines2=plotEta(0,4,xArray,alpha)
+    if (bool_const): 
+        lines2=plotEta(0,4,xArray,alpha)
     plt.legend()
     plt.tight_layout()
     plt.savefig("etaAnalytic_vitber2_3.pdf")
-    
+
+#Lager figur 2
+def plotCompareEta(alpha,xArray):
+    plt.figure()
+    plotEtaAnalytic(4,alpha,53.05,xArray,'r',r'$\eta, \alpha=1,\beta=53.05$',False) 
+    plotEtaAnalytic(4,alpha,10000,xArray,'b',r'$\eta, \alpha=1,\beta=10 000$',False)
+    plotEtaAnalytic(4,2.5,53.05,xArray,'g',r'$\eta, \alpha=2.5,\beta=53.05$',False)
+    plt.legend(loc=7)
+
 def main():
     N = 8
     beta=53.05*np.ones(N)
@@ -124,15 +133,7 @@ def main():
 
     xArray = LS.calculateXVector(A, U)
     
-    plotSubEta(0, N, xArray, alpha) #figur 3,Subplots med de deriverte.
+    plotSubEta(0, N, xArray, alpha) #figur 3,Subplots med de deriverte. 
     plt.figure()
-    
-    #Figur 1:
-    plotEtaAnalytic(4,alpha,53.05,xArray,'r',r'$\eta$-analytical') 
-    
-    #Figur 2: (Kommenter ut linje 113 i plotEtaAnalytic)
-    plotEtaAnalytic(4,alpha,53.05,xArray,'r',r'$\eta, \alpha=1,\beta=53.05$') 
-    plotEtaAnalytic(4,alpha,10000,xArray,'b',r'$\eta, \alpha=1,\beta=10 000$')
-    plotEtaAnalytic(4,2.5,53.05,xArray,'g',r'$\eta, \alpha=2.5,\beta=53.05$')
-    plt.legend(loc=7)
-
+    plotEtaAnalytic(4,alpha,53.05,xArray,'r',r'$\eta$-analytical',True)  #plotter figur 1
+    plotCompareEta(alpha,xArray) #plotter figur 2
