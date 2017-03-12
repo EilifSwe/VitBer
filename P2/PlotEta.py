@@ -3,19 +3,19 @@ import matplotlib.pyplot as plt
 
 import LinearSystem as LS
 import SystemConstants as SC
-
+#eta-funksjonen
 def eta(k, xArray, alpha):
     x=np.linspace(0.0,1.0,200)
     return (((-(alpha / 24.) *x + xArray[4*k])*x + xArray[4*k+1])*x + xArray[4*k+2])*x + xArray[4*k+3]
-
+#forstederiverte
 def dEta(k, xArray, alpha):
     x=np.linspace(0.0,1.0,200)
     return ((-(alpha / 6.) *x + 3*xArray[4*k])*x + 2*xArray[4*k+1])*x + xArray[4*k+2]
-    
+#andrederiverte    
 def ddEta(k, xArray, alpha):
     x=np.linspace(0.0,1.0,200)
     return (-(alpha / 2.) *x + 6*xArray[4*k])*x + 2*xArray[4*k+1]
-    
+#tredjederiverte    
 def dddEta(k, xArray, alpha):
     x=np.linspace(0.0,1.0,200)
     return -alpha*x + 6*xArray[4*k]
@@ -93,7 +93,7 @@ def plotSubEta(nr,N,xArray,alpha): #plotter eta numerisk.
 
 def plotEtaAnalytic(N,alpha,beta,xArray,col,label1): #plotter eta analytisk.
     for i in range(N):
-        if i==(N-1):
+        if i==(N-1): #legger til labelnavn kun på sist krok
             x=np.linspace(0+i,1+i,200)
             etaAnalytic=-(alpha / 24.)*(x-i)**4 + (alpha/12.)*(x-i)**3 + -(alpha/24.)*(x-i)**2 -(alpha/beta)
             lines=plt.plot(x,etaAnalytic,label=label1)
