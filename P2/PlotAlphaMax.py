@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
 import LinearSystem as LS
 import SystemConstants as SC
 import PlotAlpha as PA
