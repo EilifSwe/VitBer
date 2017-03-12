@@ -6,7 +6,7 @@ import SparseTime as ST
 import SystemConstants as SC
 from timeit import default_timer as timer
 
-start = timer()
+start = timer() #Ønsker oversikt over tidsbruk på kjøring
 
 if __name__ == "__main__":
     Master_Flag = {
