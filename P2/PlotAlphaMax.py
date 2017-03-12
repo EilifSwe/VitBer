@@ -5,13 +5,15 @@ import SystemConstants as SC
 import PlotAlpha as PA
 
 def main(numberOfIterations, numberOfSprings, numberOfPoints, betaMin, betaMax):
-    betaList = [np.power(10,i) for i in np.linspace(np.log10(betaMin), np.log10(betaMax), numberOfPoints)]
+    #Finner betaverdiene som skal være med i plottet med logaritmisk fordeling
+    betaList = [np.power(10,i) for i in np.linspace(np.log10(betaMin), np.log10(betaMax), numberOfPoints)]  
     alphaMaxList = np.zeros(numberOfPoints)
     
     for i in range(0, numberOfPoints):
         var=0
-        alphaList,var = PA.make_alpha_list(numberOfSprings, numberOfIterations, betaList[i])
-        alphaMaxList[i] = np.max(alphaList)
+        alphaList,var = PA.make_alpha_list(numberOfSprings, numberOfIterations, betaList[i]) #Regner ut alpha-listen for alle betaverdiene
+        alphaMaxList[i] = np.max(alphaList) #Finner maksimum og lagrer det
+
     plt.figure(figsize=(5,3))
     plt.semilogx(betaList, alphaMaxList)
     plt.semilogy(betaList,alphaMaxList)

@@ -17,55 +17,57 @@ def findNextBreak(t_list, beta, x_vector):
     return nextBreak, max_r
     #Returns the index of the next hook that breaks and corresponding max_r
 
+#Lager en liste med N tilfeldige verdier mellom 0 og limit
 def make_t_list(N, limit):
     t_list=np.zeros(N)
     for i in range(len(t_list)):
         t_list[i]=r.random()*limit
     return t_list
 
-
-def make_alpha_list(N, M, beta):
+#Lager en liste med alphaverdiene som kreves for å løsrive den neste kroken
+#betaIndexMatrix er en tabell med indeksen til kroken som løsrives
+def make_alpha_list(N, M, beta):        #N kroker simuleres M ganger
     betaList = np.zeros(N)
-    A = LS.makeAMatrix(N, betaList)
-    U = LS.makeUVector(N, 1)
+    A = LS.makeAMatrix(N, betaList)     #Lager A-matrisen (dette trengs bare en gang)
+    U = LS.makeUVector(N, 1)            #Lager U-vektorsen med alpha lik 1
     
-    betaIndexMatrix=np.zeros([M,N])
-    alpha = np.zeros(N)
+    betaIndexMatrix=np.zeros([M,N])     
+    alpha = np.zeros(N)                 #Oppretter listen som skal inneholde gjennomsnittet av alpha-verdiene
     
     for i in range(M):
-        betaList = beta*np.ones(N)
-        LS.updateAMatrix(betaList, A, N)
-        tList = make_t_list(N, SC.maxThreshold)
+        betaList = beta*np.ones(N)                  #Lager en betaliste med ingen røkede kroker
+        LS.updateAMatrix(betaList, A, N)            #Oppdaterer A-matrisen med disse nye betaverdiene
+        tList = make_t_list(N, SC.maxThreshold)     #Lager en ny liste med tilfeldige løsrivningsverdier
         for k in range(0, N):
-            xRef = LS.calculateXVector(A, U)
-            betaIndex, rValue = findNextBreak(tList, betaList, xRef) 
-            betaIndexMatrix[i,k]=betaIndex
-            alpha[k] += betaList[betaIndex] / rValue
-            betaList[betaIndex] = 0
-            LS.updateAMatrix(betaList, A, N)
-    alpha = alpha/M
+            xRef = LS.calculateXVector(A, U)                            #Kalkulerer xref-vektoren
+            betaIndex, rValue = findNextBreak(tList, betaList, xRef)    #Finner den neste kroken som ryker og r-verdien dens
+            betaIndexMatrix[i,k]=betaIndex                              #Lagrer indeksen i tabellen
+            alpha[k] += betaList[betaIndex] / rValue                    #Regner ut alpha-verdien og legger den til i alpha-listen
+            betaList[betaIndex] = 0                                     #Oppdaterer beta-listen med den røkete kroken
+            A[4*betaIndex, 4*betaIndex+3] = 0                           #Oppdaterer A-matrisen med den røkete kroken             
+    alpha = alpha/M                    #Deler med M for at det skal være gjennomsnitt
     return alpha, betaIndexMatrix
 
+#Samme som make_alpha_list bare med to endringer
 def make_alpha_list_sparse(N, M, beta):
     betaList = np.zeros(N)
-    A = LS.makeSparseAMatrix(N, betaList)
+    A = LS.makeSparseAMatrix(N, betaList)   #Oppretter A som en sparse-matrise
     U = LS.makeUVector(N, 1)
     
     betaIndexMatrix=np.zeros([M,N])
     alpha = np.zeros(N)
-    
     
     for i in range(M):
         betaList = beta*np.ones(N)
         LS.updateAMatrix(betaList, A, N)
         tList = make_t_list(N, SC.maxThreshold)
         for k in range(0, N):
-            xRef = LS.calculateSparseXVector(A, U)
+            xRef = LS.calculateSparseXVector(A, U)                      #Regner ut X-vektoren med sparse-solver
             betaIndex, rValue = findNextBreak(tList, betaList, xRef)
             betaIndexMatrix[i,k]=betaIndex
             alpha[k] += betaList[betaIndex] / rValue
             betaList[betaIndex] = 0
-            A[4*betaIndex, 4*betaIndex+3]=-betaList[betaIndex]
+            A[4*betaIndex, 4*betaIndex+3]=0
     alpha = alpha/M
     return alpha, betaIndexMatrix
     

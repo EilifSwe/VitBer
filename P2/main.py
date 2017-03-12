@@ -14,7 +14,7 @@ if __name__ == "__main__":
                 1: 'PlotAlpha',
                 2: 'PlotAlphaMax',
                 3: 'SparseTime'
-        }[3]
+        }[2]
     if Master_Flag == 'PlotEta':
         PE.main()
     elif Master_Flag == 'PlotAlpha':

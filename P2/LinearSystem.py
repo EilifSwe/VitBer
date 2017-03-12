@@ -5,8 +5,6 @@ from scipy.sparse.linalg import spsolve
 def makeAMatrix(N, beta): #beta er liste med betaverdier og N er antall kroker
     k=4*N
     A=np.zeros((k,k)) #initialiserer en matrise som kan settes inn verdier i
-    Left_square = np.array([[6.0,0,0,0],[0,2,0,0],[0,0,1,0],[0,0,0,1]])
-    Right_square = np.array([[-6.0,0,0,0],[-6,-2,0,0],[-3,-2,-1,0],[-1,-1,-1,-1]])
     
     for i in range(0, N):
         j = (i + N - 1) % N
