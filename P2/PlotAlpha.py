@@ -14,7 +14,6 @@ def findNextBreak(t_list, beta, x_vector):
         if r > max_r:
             max_r=r 
             nextBreak=i
-        #print(-r, i)
     return nextBreak, max_r
     #Returns the index of the next hook that breaks and corresponding max_r
 
@@ -35,17 +34,17 @@ def make_alpha_list(N, M, beta):
     alpha = np.zeros(N)
     
     for i in range(M):
-        betaList = beta*np.ones(N) #ok
-        LS.updateAMatrix(betaList, A, N) #ok
-        tList = make_t_list(N, SC.maxThreshold) #ok
-        for k in range(0, N): #ok
-            xRef = LS.calculateXVector(A, U) #ok
+        betaList = beta*np.ones(N)
+        LS.updateAMatrix(betaList, A, N)
+        tList = make_t_list(N, SC.maxThreshold)
+        for k in range(0, N):
+            xRef = LS.calculateXVector(A, U)
             betaIndex, rValue = findNextBreak(tList, betaList, xRef) 
             #betaIndexList[k] = betaIndex
             betaIndexMatrix[i,k]=betaIndex
             alpha[k] += betaList[betaIndex] / rValue
             betaList[betaIndex] = 0
-            LS.updateAMatrix(betaList, A, N) #hvorfor er det forskjell her og i make_alpha_sparse?
+            LS.updateAMatrix(betaList, A, N)
     alpha = alpha/M
     return alpha, betaIndexMatrix #betaIndexList
 
@@ -54,7 +53,6 @@ def make_alpha_list_sparse(N, M, beta):
     A = LS.makeSparseAMatrix(N, betaList)
     U = LS.makeUVector(N, 1)
     
-    #betaIndexList = np.zeros(N)
     betaIndexMatrix=np.zeros([M,N]) #matrise for å få til fargeplott
     alpha = np.zeros(N)
     
@@ -66,11 +64,11 @@ def make_alpha_list_sparse(N, M, beta):
         for k in range(0, N):
             xRef = LS.calculateSparseXVector(A, U)
             betaIndex, rValue = findNextBreak(tList, betaList, xRef)
-            #betaIndexList[k] = betaIndex
+            
             betaIndexMatrix[i,k]=betaIndex #legger beta-indeksene i matrisa for hver iterasjon
             alpha[k] += betaList[betaIndex] / rValue
             betaList[betaIndex] = 0
-            A[4*betaIndex, 4*betaIndex+3]=-betaList[betaIndex] #hvorfor forskjell her og i vanlig?
+            A[4*betaIndex, 4*betaIndex+3]=-betaList[betaIndex]
     alpha = alpha/M
     return alpha, betaIndexMatrix #betaIndexList
     
