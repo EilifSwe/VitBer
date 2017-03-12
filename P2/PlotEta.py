@@ -125,7 +125,6 @@ def plotEtaAnalytic(N,alpha,beta,xArray):
     #plt.text(3.35,-0.197,r'$\beta=53.05$',fontsize=15)
     plt.tight_layout()
     plt.savefig("etaAnalytic_vitber2.pdf")
-    #Main
 def main():
     N = 8
     beta=53.05*np.ones(N)
