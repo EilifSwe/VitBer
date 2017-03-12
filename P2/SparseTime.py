@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from timeit import default_timer as timer
 
-def main():
+def main(): #Lager plot for å ta tid på tett og glissen matrise
     N = 25
     
     normalTime = np.zeros(N)
