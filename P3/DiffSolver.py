@@ -30,12 +30,16 @@ def varTimeTrapezoidStep(x, L, y, f, TOL):
     
     delX = L/100
     fk1 = f(x+delX, y + delX*k0)
-    dx = np.sqrt((2*TOL)*delX/np.abs(fk1-k0))
+    dx = 0.8*np.sqrt((2*TOL)*delX/np.abs(fk1-k0))
     
     if(x+dx >L):
         dx = L - x
     
     k1 = f(x +dx, y + dx*k0)
+    while(0.5*dx*abs(k1-k0)>TOL):
+        dx=dx/2
+        k1 = f(x +dx, y + dx*k0)
+    
     print(0.5*dx*abs(k1-k0)/TOL)
     return x + dx, y + 0.5*dx*(k0+k1)
     
@@ -54,29 +58,24 @@ def varTimeTrapezoid(L, x0, y0, f, TOL):
 def func(x,y):
     return np.cos(x)
 
-'''
+
 def main():
     N = 100
-    L = 8*np.pi
-    
+    L = 2*np.pi
+    TOL=0.01
     
     xAn = np.linspace(0,L,200)
     yAn = np.sin(xAn)
     
-    xFE = np.linspace(0,L,N)
-    yFE = forwardEuler(N, L, 0, 0, func)
-    
-    xTr = np.linspace(0,L,N)
-    yTr = trapezoid(N, L, 0, 0, func)
-    
-    xVTr, yVTr = varTimeTrapezoid(L, 0, 0, func, 0.02)
-    
+    xVTr, yVTr = varTimeTrapezoid(L, 0, 0, func, TOL)
+    plt.figure(figsize=(10,15))
     p1, = plt.plot(xAn, yAn, label="Analytic")
-    p2, = plt.plot(xFE, yFE, label="Forward Euler")
-    p3, = plt.plot(xTr, yTr, label="Trapezoid")
-    p4, = plt.plot(xVTr, yVTr,'ro', label="Variable Trapezoid")
-    plt.legend(loc = 0,handles=[p1, p2, p3, p4])
+   # p2, = plt.plot(xFE, yFE, label="Forward Euler")
+    #p3, = plt.plot(xTr, yTr, label="Trapezoid")
+    p4, = plt.plot(xVTr, np.zeros(N),'ro', label="Variable Trapezoid")
+    plt.legend(loc = 0,handles=[p1,p4])
     plt.show()
     plt.show()
-'''
+    
+main()
     
