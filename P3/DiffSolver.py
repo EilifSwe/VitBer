@@ -1,16 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def forwardEulerStep(x, dx, y, f):
-    return y + dx*f(x,y)
+def forwardEulerStep(t, dt, X, f):
+    return X + dt*f(X,t)
 
-def forwardEuler(N, L, x0, y0, f):
-    dx = L/N
-    y = np.zeros(N)
-    y[0] = y0
+def forwardEuler(N, T, t0, X0, f):
+    dt = T/N
+    X = np.asarray([np.zeros(2) for i in range(N)])
+    X[0] = X0
     for i in range(0, N-1):
-        y[i+1] = forwardEulerStep(i*dx, dx, y[i], f)
-    return y
+        X[i+1] = forwardEulerStep(i*dt, dt, X[i], f)
+    return X
     
 def trapezoidStep(x, dx, y, f):
     k0 = f(x,y)
@@ -54,6 +54,7 @@ def varTimeTrapezoid(L, x0, y0, f, TOL):
 def func(x,y):
     return np.cos(x)
 
+'''
 def main():
     N = 100
     L = 8*np.pi
@@ -77,6 +78,5 @@ def main():
     plt.legend(loc = 0,handles=[p1, p2, p3, p4])
     plt.show()
     plt.show()
-
-main()
+'''
     
