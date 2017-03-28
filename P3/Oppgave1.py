@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 import DiffSolver as DS
 
 def f(X, t):
-    return 2*np.pi/24 * np.asarray([-X[1], X[0]])
+    return 2*np.pi/(24*3600) * np.asarray([-X[1], X[0]])
 
 def f2(Y, t):
-    alpha = 5e-5
+    alpha = (5e-5)
     m = 0.01
     return np.asarray([alpha/m*(f(Y[1], t) - Y[0]), Y[0]])
 
@@ -47,8 +47,8 @@ def met2An():
     
 
 def met2():
-    N = 100
-    T = 2*24
+    N = 500
+    T = 2*24*3600
     L = 100
     
     dt = T/N
