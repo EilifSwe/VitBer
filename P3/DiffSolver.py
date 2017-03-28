@@ -12,18 +12,18 @@ def forwardEuler(N, T, t0, X0, f):
         X[i+1] = forwardEulerStep(i*dt, dt, X[i], f)
     return X
     
-def trapezoidStep(x, dx, y, f):
-    k0 = f(x,y)
-    k1 = f(x +dx, y + dx*k0)
-    return y + 0.5*dx*(k0+k1)
+def trapezoidStep(t, dt, X, f):
+    k0 = f(X,t)
+    k1 = f(X + dt*k0, t +dt,)
+    return X + 0.5*dt*(k0+k1)
     
-def trapezoid(N, L, x0, y0, f):
-    dx = L/N
-    y = np.zeros(N)
-    y[0] = y0
+def trapezoid(N, T, t0, X0, f):
+    dt = T/N
+    X = np.asarray([np.zeros(2) for i in range(N)])
+    X[0] = X0
     for i in range(0, N-1):
-        y[i+1] = trapezoidStep(i*dx, dx, y[i], f)
-    return y
+        X[i+1] = trapezoidStep(i*dt, dt, X[i], f)
+    return X
     
 def varTimeTrapezoidStep(x, L, y, f, TOL):
     k0 = f(x,y)
