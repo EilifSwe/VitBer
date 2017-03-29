@@ -5,7 +5,7 @@ def forwardEulerStep(t, dt, X, f):
     return X + dt*f(X,t)
 
 def forwardEuler(N, T, t0, X0, f):
-    dt = T/N
+    dt = T/(N-1)
     X = np.asarray([np.zeros(2) for i in range(N)])
     X[0] = X0
     for i in range(0, N-1):
@@ -18,8 +18,8 @@ def trapezoidStep(t, dt, X, f):
     return X + 0.5*dt*(k0+k1)
     
 def trapezoid(N, T, t0, X0, f):
-    dt = T/N
-    X = np.asarray([np.zeros(2) for i in range(N)])
+    dt = T/(N-1)
+    X = np.asarray([np.zeros(2) for i in range(N+1)])
     X[0] = X0
     for i in range(0, N-1):
         X[i+1] = trapezoidStep(i*dt, dt, X[i], f)
@@ -80,7 +80,6 @@ def main():
     p4, = plt.plot(xVTr, yVTr,'ro', label="Variable Trapezoid")
     plt.legend(loc = 0,handles=[p1,p4])
     plt.show()
-    plt.show()
     
-main()
+#main()
     
