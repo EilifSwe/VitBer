@@ -8,8 +8,9 @@ if __name__ == "__main__":
                 1: 'PlotError',
                 2: 'EvaluateTime',
                 3: 'PlotWithMass',
-                4: 'PlotErrorWithMass'
-        }[4]
+                4: 'PlotErrorWithMass',
+                5: 'PlotVarTimestep'
+        }[5]
     if Master_Flag == 'PlotPath':
         O1.plotPath()
     elif Master_Flag == 'PlotError':
@@ -20,6 +21,8 @@ if __name__ == "__main__":
         O1.plotWithMass()
     elif Master_Flag == 'PlotErrorWithMass':
         O1.plotErrorWithMass()
+    elif Master_Flag == 'PlotVarTimestep':
+        O1.plotVarTimeStepMass()
         
 #end = timer()
 #O1.met2()

@@ -112,12 +112,12 @@ def mass(N, T, L):
     Y = np.asarray([np.asarray([np.zeros(2),np.zeros(2)]) for i in range(N)])
     Y[0] = np.asarray([np.asarray([0,0]),np.asarray([L,0])])
     for i in range(0, N-1):
-        Y[i+1] = DS.trapezoidStep(i*dt, dt, Y[i], f2)
+        Y[i+1] = DS.forwardEulerStep(i*dt, dt, Y[i], f2)
     return Y[:,1,:]
     
 
 def plotWithMass():
-    N = 100
+    N = 500
     T = 2*24*3600
     L = 100
     
@@ -126,7 +126,7 @@ def plotWithMass():
     
     plt.figure()
     plt.plot(XNum[:,0],XNum[:,1])
-    plt.plot(XAn[0], XAn[1], 'ro', color = 'g')
+    #plt.plot(XAn[0], XAn[1], 'ro', color = 'g')
     plt.show()
 
 def plotErrorWithMass():
@@ -134,10 +134,10 @@ def plotErrorWithMass():
     totalTime = 2*24*3600
     t0 = 0
     
-    steps = 10
+    steps = 100
     error = np.zeros(steps)
     endpoint = massAn()
-    Nlist = [430+100*i for i in range(1, steps+1)]
+    Nlist = [230+10*i for i in range(1, steps+1)]
     for i in range(steps):
         X = mass(Nlist[i], totalTime, L)
         error[i] = np.sqrt((X[Nlist[i]-1,0] - endpoint[0])**2 + (X[Nlist[i]-1,1]-endpoint[1])**2)
@@ -151,6 +151,56 @@ def plotErrorWithMass():
     plt.semilogy()
     plt.plot(hlist, error)
     plt.show()
+    
+def varTimeStepMass(TOL, t0, totalTime, L):
+    Y = []
+    t = []
+    dt = []
+    
+    
+    steps = 0
+    
+    currentY = np.asarray([np.asarray([0,0]),np.asarray([L,0])])
+    currentt = t0
+    currentdt = 400
+    while (currentt < totalTime):
+        currentY, currentt, currentdt = DS.varTimeTrapezoidStep(currentt, currentY, f2, TOL, currentdt, totalTime)
+        
+        Y.append(currentY)
+        t.append(currentt)
+        dt.append(currentdt)
+        steps += 1
+    Y = np.asarray(Y)
+    print(steps)
+    return Y[:,1,:], t, dt
+    
+def plotVarTimeStepMass():
+    L = 100
+    totalTime = 2*24*3600
+    t0 = 0
+    TOL = 1
+    
+    XNum, tNum, dtNum = varTimeStepMass(TOL, t0, totalTime, L)
+    XAn = massAn()
+    
+    plt.figure()
+    plt.plot(tNum, dtNum, 'ro')
+    plt.show()
+    
+    plt.figure()
+    plt.plot(XNum[:,0], XNum[:,1])
+    plt.show()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
