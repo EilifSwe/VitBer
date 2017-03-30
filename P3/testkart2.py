@@ -8,7 +8,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 # nicer looking default plots
-plt.style.use('bmh')
+#plt.style.use('bmh')
 
 # Library to read data from NetCDF files
 import xarray as xr
@@ -62,6 +62,7 @@ class Interpolator():
 
     def __call__(self, X, t):
         # get index of current time in dataset
+
         it = self.get_time_index(t)
         # get interpolating functions,
         # covering the extent of the particle
@@ -71,7 +72,7 @@ class Interpolator():
         dy = fv(X[0,:], X[1,:], grid = False)
         return np.array([dx, dy])
 
-
+'''
 #################################################
 #### Reading velocity data from NetCDF files ####
 #################################################
@@ -243,3 +244,4 @@ ax.pcolormesh(lons, lats, C, transform=ccrs.PlateCarree(), zorder=2)
 # (lon0, lat0), (lon0, lat1), (lon1, lat0), (lon1, lat1).
 ax.set_extent((-5, 15, 57, 67))
 plt.show()
+'''
