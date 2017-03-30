@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import ScalarFormatter, FormatStrFormatter
 import DiffSolver as DS
 from timeit import default_timer as timer
 
@@ -12,7 +13,7 @@ def f2(Y, t):
     return np.asarray([alpha/m*(f(Y[1], t) - Y[0]), Y[0]])
 
 def plotPath():
-    N = 20
+    N = 200
     L = 100
     totalTime = 2*24*3600
     X0 = np.asarray([L, 0.])
@@ -21,10 +22,17 @@ def plotPath():
     XEuler = DS.forwardEuler(N, totalTime, t0, X0, f)
     XTrapezoid = DS.trapezoid(N, totalTime, t0, X0, f)
     
+    #plott startpunkt
     plt.figure()
-    plt.plot(XEuler[:,0],XEuler[:,1])
-    plt.plot(XTrapezoid[:,0],XTrapezoid[:,1])
-    
+    plt.plot(XEuler[:,0],XEuler[:,1],label='Euler')
+    plt.plot(XTrapezoid[:,0],XTrapezoid[:,1],label='Trapezoid')
+    plt.plot(XEuler[0,0],XEuler[0,1],'x')
+    plt.plot(XTrapezoid[0,0],XTrapezoid[0,1],'x')
+    plt.title("Banen til x(t)",fontsize=15)
+    plt.xlabel("Posisjon, $x$",fontsize=15)
+    plt.ylabel("Posisjon, $y$",fontsize=15)
+    plt.legend()
+    plt.savefig("path_oppg1.pdf")
     plt.show()
 
 def plotError():
@@ -58,13 +66,16 @@ def plotError():
     
     hlist = [totalTime/(i-1) for i in Nlist]
     
-    plt.figure()
-    plt.xlabel("h")
-    plt.ylabel("error")
+    plt.figure() 
     plt.semilogx()
     plt.semilogy()
-    plt.plot(hlist, errorEuler)
-    plt.plot(hlist, errorTrapezoid)
+    plt.plot(hlist, errorEuler,label='Error - Euler')
+    plt.plot(hlist, errorTrapezoid,label='Error - Trapezoid')
+    plt.title("Feil for Euler og Trapezoid",fontsize=15)
+    plt.xlabel("Tidssteg, $h$",fontsize=15)
+    plt.ylabel("Error",fontsize=15)
+    plt.legend(loc=4)
+    plt.savefig("Error_oppg1a.pdf")
     plt.show()
 
 def evaluateTime():
@@ -125,7 +136,16 @@ def plotWithMass():
     XAn = massAn()
     
     plt.figure()
-    plt.plot(XNum[:,0],XNum[:,1])
+    plt.plot(XNum[0,0],XNum[0,1],'x')
+    
+    
+    plt.plot(XNum[:,0],XNum[:,1],label="Trapezoid")
+    plt.title("Banen til $x(t)$",fontsize=15)
+    plt.xlabel("Posisjon, $x$",fontsize=15)
+    plt.ylabel("Posisjon, $y$",fontsize=15)
+    plt.legend(loc=4)
+    plt.savefig("Bane_oppg1c.pdf")
+    
     #plt.plot(XAn[0], XAn[1], 'ro', color = 'g')
     plt.show()
 
@@ -134,24 +154,48 @@ def plotErrorWithMass():
     totalTime = 2*24*3600
     t0 = 0
     
-    steps = 100
+    steps = 90
     error = np.zeros(steps)
     endpoint = massAn()
-    Nlist = [230+10*i for i in range(1, steps+1)]
+    hlist = [100+10*i for i in range(1, steps+1)]
+    Nlist = [totalTime//(i-1) for i in hlist]
     for i in range(steps):
         X = mass(Nlist[i], totalTime, L)
         error[i] = np.sqrt((X[Nlist[i]-1,0] - endpoint[0])**2 + (X[Nlist[i]-1,1]-endpoint[1])**2)
     
-    hlist = [totalTime/(i-1) for i in Nlist]
-    
+   
+    #plott log-log
     plt.figure()
-    plt.xlabel("h")
-    plt.ylabel("error")
     plt.semilogx()
     plt.semilogy()
-    plt.plot(hlist, error)
+    plt.plot(hlist, error,label="Global Error - Trapezoid")
+    plt.title("Global Error ",fontsize=15)
+    plt.xlabel("Tidssteg, $h$",fontsize=15)
+    plt.ylabel("Error",fontsize=15) 
+    plt.legend(loc=2)
+    plt.savefig("Globalerror_oppg1c.pdf")
     plt.show()
     
+    #Plott normal - log
+    hlist = [100+4*i for i in range(1, steps+1)]
+    Nlist = [totalTime//(i-1) for i in hlist]
+    for i in range(steps):
+        X = mass(Nlist[i], totalTime, L)
+        error[i] = np.sqrt((X[Nlist[i]-1,0] - endpoint[0])**2 + (X[Nlist[i]-1,1]-endpoint[1])**2)
+    
+    plt.figure()
+    #plt.semilogx()
+    plt.semilogy()
+    plt.plot(hlist, error,label="Global Error - Trapezoid")
+    plt.title("Global Error ",fontsize=15)
+    plt.xlabel("Tidssteg, $h$",fontsize=15)
+    plt.ylabel("Error",fontsize=15) 
+    plt.legend(loc=2)
+    plt.savefig("Globalerror_oppg1c_test.pdf")
+    plt.show()
+    
+        
+        
 def varTimeStepMass(TOL, t0, totalTime, L):
     Y = []
     t = []
@@ -171,7 +215,7 @@ def varTimeStepMass(TOL, t0, totalTime, L):
         dt.append(currentdt)
         steps += 1
     Y = np.asarray(Y)
-    print(steps)
+    #print(steps)
     return Y[:,1,:], t, dt
     
 def plotVarTimeStepMass():
@@ -184,11 +228,27 @@ def plotVarTimeStepMass():
     XAn = massAn()
     
     plt.figure()
-    plt.plot(tNum, dtNum, 'ro')
+    plt.plot(tNum, dtNum, 'o',label='Tidssteg')
+    plt.title("Banen til $x(t)$ med variabelt tidssteg",fontsize=15)
+    plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
+    plt.xlabel("Tidsutvikling, $t$",fontsize=15)
+    plt.ylabel("Endring i tid, $dt$",fontsize=15)
+    
+    plt.ylim([0,500])
+    
+    plt.legend()
+    plt.savefig("Tid_oppg1d.pdf")
     plt.show()
     
+    
     plt.figure()
-    plt.plot(XNum[:,0], XNum[:,1])
+    plt.plot(XNum[:,0], XNum[:,1],label="Trapezoid")
+    plt.plot(XNum[0,0], XNum[0,1],'x')
+    plt.title("Banen til $x(t)$ med variabelt tidssteg",fontsize=15)
+    plt.xlabel("Posisjon, $x$",fontsize=15)
+    plt.ylabel("Posisjon, $y$",fontsize=15)
+    plt.legend(loc=4)
+    plt.savefig("Bane_oppg1d.pdf")
     plt.show()
     
     
