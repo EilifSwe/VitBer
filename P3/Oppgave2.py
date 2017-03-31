@@ -67,10 +67,21 @@ def plotPath(map):
         ax.plot(lons2, lats2, transform=ccrs.PlateCarree(), zorder=2)
         
         ax.set_extent((-5, 15, 57, 67))
+        plt.savefig("BaneMap_oppg2a")
     else:
-        plt.plot(X1[:,0,0], X1[:,1,0])
-        plt.plot(X2[:,0,0], X2[:,1,0])
-        plt.plot(X3[:,0,0], X3[:,1,0])
+        plt.figure()
+        plt.plot(X1[:,0,0], X1[:,1,0],label="$t_0$ = 1. Feb")
+        plt.plot(X2[:,0,0], X2[:,1,0],label="$t_0$= 5. Feb")
+        plt.plot(X3[:,0,0], X3[:,1,0],label="$t_0$= 10. Feb")
+        plt.title("Partikkelbane ved ulike $t_0$.",fontsize=15)
+        plt.xlabel("Posisjon, $x$ (m)",fontsize=15)
+        plt.ylabel("Posisjon, $y$(m)",fontsize=15)
+        plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
+        plt.ticklabel_format(useOffset=False, style='sci',axis='y',scilimits=(0,0))
+        plt.legend(loc=2)
+        
+        plt.savefig("BaneNormal_oppg2a")
+        
         
    
     

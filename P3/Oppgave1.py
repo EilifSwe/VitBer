@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 from matplotlib.ticker import ScalarFormatter, FormatStrFormatter
 import DiffSolver as DS
 from timeit import default_timer as timer
+import TSM_Classes as TSM_C
 
 def f(X, t):
     return 2*np.pi/(24*3600) * np.asarray([-X[1], X[0]])
@@ -30,8 +32,8 @@ def plotPath():
     plt.plot(XEuler[0,0],XEuler[0,1],'x')
     plt.plot(XTrapezoid[0,0],XTrapezoid[0,1],'x')
     plt.title("Banen til x(t)",fontsize=15)
-    plt.xlabel("Posisjon, $x$",fontsize=15)
-    plt.ylabel("Posisjon, $y$",fontsize=15)
+    plt.xlabel("Posisjon, $x$ (m)",fontsize=15)
+    plt.ylabel("Posisjon, $y$ (m)",fontsize=15)
     plt.legend()
     plt.savefig("path_oppg1.pdf")
     plt.show()
@@ -76,22 +78,21 @@ def plotError():
     plt.xscale('log')
     plt.yscale('log')
     plt.title("Feil for Euler og Trapezoid",fontsize=15)
-    plt.xlabel("Tidssteg, $h$",fontsize=15)
-    plt.ylabel("Error",fontsize=15)
+    plt.xlabel("Tidssteg, $h$ (s)",fontsize=15)
+    plt.ylabel("Error, (m)",fontsize=15)
     plt.legend(loc=4)
     plt.savefig("Error_oppg1a.pdf")
     plt.show()
 
 def evaluateTime():
-    NEuler = 830
-    NTrapez = 60
+    hEuler = 208
+    hTrapez = 3004
     
     L = 100
     totalTime = 2*24*3600
     X0 = np.asarray([L, 0.])
     t0 = 0
-    hEuler=totalTime/NEuler
-    hTrapez=totalTime/NTrapez
+    
     eulerT1 = timer()
     Xeuler = DS.forwardEuler(hEuler, totalTime, t0, X0, f)
     eulerT2 = timer()
@@ -100,8 +101,8 @@ def evaluateTime():
     Xtrapez = DS.trapezoid(hTrapez, totalTime, t0, X0, f)
     trapezT2 = timer()
     
-    print("Euler time:", eulerT2 - eulerT1)
-    print("Trapez time:", trapezT2 - trapezT1)
+    print("Euler time:", eulerT2 - eulerT1, "Error:", np.sqrt((Xeuler[-1,0] - L)**2 + Xeuler[-1,1]**2))
+    print("Trapez time:", trapezT2 - trapezT1, "Error:",np.sqrt((Xtrapez[-1,0] - L)**2 + Xtrapez[-1,1]**2))
 
 def massAn():
     L = 1.0E+02
@@ -146,8 +147,8 @@ def plotWithMass():
     
     plt.plot(XNum[:,0],XNum[:,1],label="Trapezoid")
     plt.title("Banen til $x(t)$",fontsize=15)
-    plt.xlabel("Posisjon, $x$",fontsize=15)
-    plt.ylabel("Posisjon, $y$",fontsize=15)
+    plt.xlabel("Posisjon, $x$ (m)",fontsize=15)
+    plt.ylabel("Posisjon, $y$ (m)",fontsize=15)
     plt.legend(loc=4)
     plt.savefig("Bane_oppg1c.pdf")
     
@@ -171,15 +172,19 @@ def plotErrorWithMass():
     
    
     #plott log-log
-    plt.figure()
-    plt.semilogx()
-    plt.semilogy()
-    plt.plot(hlist, error,label="Global Error - Trapezoid")
-    plt.title("Global Error ",fontsize=15)
-    plt.xlabel("Tidssteg, $h$",fontsize=15)
-    plt.ylabel("Error",fontsize=15)
+    figure=plt.figure()
+    ax = figure.add_subplot(111)
+    ax.loglog(hlist, error,label="Global Error - Trapezoid")
+    ax.set_title("Global Error ",fontsize=15)
+    ax.set_xlabel("Tidssteg, $h$ (s)",fontsize=15)
+    ax.set_ylabel("Error, (m)",fontsize=15)
     
-    plt.legend(loc=2)
+    ax.set_xscale('symlog', linthreshx=1)
+    
+    xAxis = plt.gca().xaxis
+    xAxis.set_minor_locator(TSM_C.MinorSymLogLocator(1))
+    xAxis.set_minor_formatter(FormatStrFormatter("%.0f"))
+    ax.legend(loc=2)
     plt.savefig("Globalerror_oppg1c.pdf")
     plt.show()
     
@@ -189,18 +194,20 @@ def plotErrorWithMass():
     for i in range(steps):
         X = mass(Nlist[i], totalTime, L)
         error[i] = np.sqrt((X[Nlist[i]-1,0] - endpoint[0])**2 + (X[Nlist[i]-1,1]-endpoint[1])**2)
-    
+    '''
     plt.figure()
     #plt.semilogx()
     plt.semilogy()
+    
     plt.plot(hlist, error,label="Global Error - Trapezoid")
     plt.title("Global Error ",fontsize=15)
     plt.xlabel("Tidssteg, $h$",fontsize=15)
     plt.ylabel("Error",fontsize=15) 
+    plt.xaxis.set_minor_formatter(FormatStrFormatter("%.1f"))
     plt.legend(loc=2)
     plt.savefig("Globalerror_oppg1c_test.pdf")
     plt.show()
-    
+    '''
         
         
 def varTimeStepMass(TOL, t0, totalTime, L):
@@ -238,6 +245,7 @@ def plotVarTimeStepMass():
     plt.plot(tNum, dtNum, 'o',label='Tidssteg')
     plt.title("Banen til $x(t)$ med variabelt tidssteg",fontsize=15)
     plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
+    plt.xlim()
     plt.xlabel("Tidsutvikling, $t$",fontsize=15)
     plt.ylabel("Endring i tid, $dt$",fontsize=15)
     
