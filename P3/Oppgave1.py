@@ -161,16 +161,16 @@ def plotErrorWithMass():
     totalTime = 2*24*3600
     t0 = 0
     
-    steps = 90
+    steps = 100
     error = np.zeros(steps)
     endpoint = massAn()
-    hlist = [100+10*i for i in range(1, steps+1)]
+    hlist = [50+10*i for i in range(1, steps+1)]
     Nlist = [totalTime//(i-1) for i in hlist]
     for i in range(steps):
         X = mass(Nlist[i], totalTime, L)
-        error[i] = np.sqrt((X[Nlist[i]-1,0] - endpoint[0])**2 + (X[Nlist[i]-1,1]-endpoint[1])**2)
+        error[i] = np.sqrt((X[-1,0] - endpoint[0])**2 + (X[-1,1]-endpoint[1])**2)
     
-   
+    
     #plott log-log
     figure=plt.figure()
     ax = figure.add_subplot(111)
@@ -187,24 +187,30 @@ def plotErrorWithMass():
     ax.legend(loc=2)
     plt.savefig("Globalerror_oppg1c.pdf")
     plt.show()
-    
-    #Plott normal - log
-    hlist = [100+4*i for i in range(1, steps+1)]
-    Nlist = [totalTime//(i-1) for i in hlist]
+    '''
+    #Nytt plott
+    hlist=np.linspace(100,390,steps)
+    Nlist = [int(totalTime//(i-1)) for i in hlist]
+    print(Nlist)
     for i in range(steps):
         X = mass(Nlist[i], totalTime, L)
-        error[i] = np.sqrt((X[Nlist[i]-1,0] - endpoint[0])**2 + (X[Nlist[i]-1,1]-endpoint[1])**2)
-    '''
-    plt.figure()
-    #plt.semilogx()
-    plt.semilogy()
+        error[i] = np.sqrt((X[-1,0] - endpoint[0])**2 + (X[-1,1]-endpoint[1])**2)
     
-    plt.plot(hlist, error,label="Global Error - Trapezoid")
-    plt.title("Global Error ",fontsize=15)
-    plt.xlabel("Tidssteg, $h$",fontsize=15)
-    plt.ylabel("Error",fontsize=15) 
-    plt.xaxis.set_minor_formatter(FormatStrFormatter("%.1f"))
-    plt.legend(loc=2)
+    figure=plt.figure()
+    ax=figure.add_subplot(111)
+    ax.loglog(hlist, error,label="Global Error - Trapezoid")
+    ax.set_title("Global Error ",fontsize=15)
+    ax.set_xlabel("Tidssteg, $h$",fontsize=15)
+    ax.set_ylabel("Error",fontsize=15) 
+    ax.set_xlim([100,400])
+    xAxis = plt.gca().xaxis
+    xAxis.set_minor_locator(TSM_C.MinorSymLogLocator(0))
+    xAxis.set_minor_formatter(FormatStrFormatter("%.0f"))
+    yAxis = plt.gca().yaxis
+    yAxis.set_minor_locator(TSM_C.MinorSymLogLocator(0))
+    yAxis.set_minor_formatter(FormatStrFormatter("%.0f"))
+    ax.legend()
+    plt.grid(b=True, which='both', color='0.3', linestyle=':')
     plt.savefig("Globalerror_oppg1c_test.pdf")
     plt.show()
     '''
