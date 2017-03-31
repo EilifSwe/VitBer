@@ -15,9 +15,9 @@ if __name__ == "__main__":
                 5: 'PlotVarTimestep',
                 6: 'PlotOceanPath',
                 7: 'PlotParticlePos'
-        }[3]
+        }[7]
     if Master_Flag == 'PlotPath':
-        h = 200
+        h = 100
         O1.plotPath(h, L, totalTime, 0)
     elif Master_Flag == 'PlotError':
         steps = 50
@@ -27,7 +27,7 @@ if __name__ == "__main__":
         hTrapez = 3004
         O1.evaluateTime(hEuler, hTrapez, L, totalTime, 0)
     elif Master_Flag == 'PlotWithMass':
-        h = 200
+        h = 100
         O1.plotWithMass(h, L, totalTime, 0)
     elif Master_Flag == 'PlotErrorWithMass':
         steps = 90
@@ -36,11 +36,8 @@ if __name__ == "__main__":
         TOL = 1
         O1.plotVarTimeStepMass(TOL, L, totalTime, 0)
     elif Master_Flag == 'PlotOceanPath':
-        map = False
+        map = True
         O2.plotPath(map)
     elif Master_Flag == 'PlotParticlePos':
-        grid = True
+        grid = False
         O3.plotParticlePos(grid)
-        
-#end = timer()
-#O1.met2()

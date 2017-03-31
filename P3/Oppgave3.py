@@ -7,7 +7,7 @@ import cartopy.feature as cfeature
 import pyproj
 
 import DiffSolver as DS
-import testkart2 as TK
+import Interpolator_Class as IC
 
 def plotOnMap(list, d):
     fig = plt.figure(figsize=(12,8))
@@ -33,7 +33,7 @@ def plotWithGrid(list, d):
     C = np.array([np.zeros(Nx) for i in range(Ny)])
     for p in range(len(list[0])):
         C[int((list[1,p] + 1210000)//800), int((list[0,p] + 3010000)//800)]+= 1
-    #C = (x + 2950000)**2 + (y + 1150000)**2
+
     
     fig = plt.figure(figsize=(12,8))
     ax  = plt.axes(projection=ccrs.NorthPolarStereo())
@@ -48,6 +48,7 @@ def plotWithGrid(list, d):
     cbar = fig.colorbar(cax, ax = ax, extend = 'both')
     
     ax.set_extent((-3, 7, 58, 62))
+    
     
     
 
@@ -70,21 +71,30 @@ def plotParticlePos(grid):
     d  = xr.open_dataset('NorKyst-800m.nc')
     f  = TK.Interpolator(dataset=d)
 
-    
+    plt.style.use('bmh')
     for i in range(0, N):
         if(i % (2*24) == 0):
             print(i//24)
             if(grid):
+                
                 plotWithGrid(particleList, d)
+                plt.savefig("ConcentrationGrid_oppg3b"+str(i)+".pdf")
+                
             else:
                 plotOnMap(particleList, d)
+                plt.savefig("Concentration_oppg3a"+str(i)+".pdf")
         particleList = DS.trapezoidStep(t0 + i*h, h, particleList, f)
     
     if(grid):
         plotWithGrid(particleList, d)
+        plt.savefig("ConcentrationGrid_oppg3b_end.pdf")
+        
     else:
         plotOnMap(particleList, d)
-    plt.style.use('bmh')
+        plt.savefig("Concentration_oppg3a_end.pdf")
+        
+    
+    
     plt.show()
     
     

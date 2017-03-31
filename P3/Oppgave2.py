@@ -15,7 +15,7 @@ import pyproj
 
 import Oppgave1 as O1
 import DiffSolver as DS
-import testkart2 as TK
+import Interpolator_Class as IC
 
 def plotPath(map):
     totalTime = 10*24*3600
@@ -66,8 +66,10 @@ def plotPath(map):
         ax.plot(lons1, lats1, transform=ccrs.PlateCarree(), zorder=2)
         ax.plot(lons2, lats2, transform=ccrs.PlateCarree(), zorder=2)
         
-        ax.set_extent((-5, 15, 57, 67))
-        plt.savefig("BaneMap_oppg2a")
+        #ax.set_extent((-5, 15, 57, 67))
+        ax.set_extent((-3, 7, 58, 62))
+    
+        plt.savefig("BaneMap_oppg2a.pdf")
     else:
         plt.figure()
         plt.plot(X1[:,0,0], X1[:,1,0],label="$t_0$ = 1. Feb")
@@ -75,12 +77,12 @@ def plotPath(map):
         plt.plot(X3[:,0,0], X3[:,1,0],label="$t_0$= 10. Feb")
         plt.title("Partikkelbane ved ulike $t_0$.",fontsize=15)
         plt.xlabel("Posisjon, $x$ (m)",fontsize=15)
-        plt.ylabel("Posisjon, $y$(m)",fontsize=15)
+        plt.ylabel("Posisjon, $y$ (m)",fontsize=15)
         plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
         plt.ticklabel_format(useOffset=False, style='sci',axis='y',scilimits=(0,0))
         plt.legend(loc=2)
         
-        plt.savefig("BaneNormal_oppg2a")
+        plt.savefig("BaneNormal_oppg2a.pdf")
         
         
    

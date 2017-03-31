@@ -41,7 +41,6 @@ def varTimeTrapezoidStep(t, X, f, TOL, lastdt, endt):
     testk1 = f(X+lastdt*k0, t + lastdt) 
     dist = np.sqrt((testk1[1][0]-k0[1][0])**2 + (testk1[1][1]-k0[1][1])**2)
     dt = 0.8*np.sqrt((2*TOL)*lastdt/dist)
-   # print(t, dt, endt)
     if(t + dt > endt):
         dt = endt -t
     

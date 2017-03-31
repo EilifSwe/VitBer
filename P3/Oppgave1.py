@@ -146,27 +146,27 @@ def plotErrorWithMass(steps, L, totalTime, t0):
         error[i] = np.sqrt((X[-1,0] - endpoint[0])**2 + (X[-1,1]-endpoint[1])**2)
     
     
-    #plott log-log
+    #Plott med divergens
     figure=plt.figure()
     ax = figure.add_subplot(111)
     ax.loglog(hlist, error,label="Global Error - Trapezoid")
     ax.set_title("Global Error ",fontsize=15)
     ax.set_xlabel("Tidssteg, $h$ (s)",fontsize=15)
     ax.set_ylabel("Error, (m)",fontsize=15)
-    
-    ax.set_xscale('symlog', linthreshx=1)
+    ax.set_xlim([50,600])
     
     xAxis = plt.gca().xaxis
     xAxis.set_minor_locator(TSM_C.MinorSymLogLocator(1))
     xAxis.set_minor_formatter(FormatStrFormatter("%.0f"))
+    plt.grid(b=True, which='both', color='0.3', linestyle=':')
     ax.legend(loc=2)
     plt.savefig("Globalerror_oppg1c.pdf")
     plt.show()
-    '''
-    #Nytt plott
+    
+    #Plott uten divergens (h<400 sekunder)
     hlist=np.linspace(100,390,steps)
     Nlist = [int(totalTime//(i-1)) for i in hlist]
-    print(Nlist)
+    #print(Nlist)
     for i in range(steps):
         X = mass(Nlist[i], totalTime, L)
         error[i] = np.sqrt((X[-1,0] - endpoint[0])**2 + (X[-1,1]-endpoint[1])**2)
@@ -174,9 +174,9 @@ def plotErrorWithMass(steps, L, totalTime, t0):
     figure=plt.figure()
     ax=figure.add_subplot(111)
     ax.loglog(hlist, error,label="Global Error - Trapezoid")
-    ax.set_title("Global Error ",fontsize=15)
-    ax.set_xlabel("Tidssteg, $h$",fontsize=15)
-    ax.set_ylabel("Error",fontsize=15) 
+    ax.set_title("Global Error  ",fontsize=15)
+    ax.set_xlabel("Tidssteg, $h$ (s)",fontsize=15)
+    ax.set_ylabel("Error, (m)",fontsize=15) 
     ax.set_xlim([100,400])
     xAxis = plt.gca().xaxis
     xAxis.set_minor_locator(TSM_C.MinorSymLogLocator(0))
@@ -188,8 +188,7 @@ def plotErrorWithMass(steps, L, totalTime, t0):
     plt.grid(b=True, which='both', color='0.3', linestyle=':')
     plt.savefig("Globalerror_oppg1c_test.pdf")
     plt.show()
-    '''
-        
+   
         
 def varTimeStepMass(TOL, t0, totalTime, L):
     Y = []
@@ -222,8 +221,8 @@ def plotVarTimeStepMass(TOL, L, totalTime, t0):
     plt.title("Banen til $x(t)$ med variabelt tidssteg",fontsize=15)
     plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
     plt.xlim()
-    plt.xlabel("Tidsutvikling, $t$",fontsize=15)
-    plt.ylabel("Endring i tid, $dt$",fontsize=15)
+    plt.xlabel("Tidsutvikling, $t$ (s)",fontsize=15)
+    plt.ylabel("Endring i tid, $dt (s) $",fontsize=15)
     
     plt.ylim([0,500])
     
@@ -236,8 +235,8 @@ def plotVarTimeStepMass(TOL, L, totalTime, t0):
     plt.plot(XNum[:,0], XNum[:,1],label="Varierende tidsstegmetode")
     plt.plot(XNum[0,0], XNum[0,1],'x')
     plt.title("Banen til $x(t)$ med variabelt tidssteg",fontsize=15)
-    plt.xlabel("Posisjon, $x$",fontsize=15)
-    plt.ylabel("Posisjon, $y$",fontsize=15)
+    plt.xlabel("Posisjon, $x$ (m) ",fontsize=15)
+    plt.ylabel("Posisjon, $y$ (m)",fontsize=15)
     plt.legend(loc=4)
     plt.savefig("Bane_oppg1d.pdf")
     plt.show()
