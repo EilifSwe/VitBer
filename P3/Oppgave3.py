@@ -69,7 +69,7 @@ def plotParticlePos(grid):
     
     t0 = np.datetime64('2017-02-01T12:00:00')
     d  = xr.open_dataset('NorKyst-800m.nc')
-    f  = TK.Interpolator(dataset=d)
+    f  = IC.Interpolator(dataset=d)
 
     plt.style.use('bmh')
     for i in range(0, N):

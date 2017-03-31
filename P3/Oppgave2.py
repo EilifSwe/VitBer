@@ -29,7 +29,7 @@ def plotPath(map):
     t2 = np.datetime64('2017-02-10T12:00:00')
     
     d  = xr.open_dataset('NorKyst-800m.nc')
-    f  = TK.Interpolator(dataset=d)
+    f  = IC.Interpolator(dataset=d)
   
     N = totalTime//h
     print("Lasting ferdig", N)
