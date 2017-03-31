@@ -1,6 +1,9 @@
 import Oppgave1 as O1
 import Oppgave2 as O2
+import Oppgave3 as O3
 
+L = 100
+totalTime = 2*24*3600
 
 if __name__ == "__main__":
     Master_Flag = {
@@ -10,22 +13,34 @@ if __name__ == "__main__":
                 3: 'PlotWithMass',
                 4: 'PlotErrorWithMass',
                 5: 'PlotVarTimestep',
-                6: 'PlotOceanPath'
-        }[6]
+                6: 'PlotOceanPath',
+                7: 'PlotParticlePos'
+        }[3]
     if Master_Flag == 'PlotPath':
-        O1.plotPath()
+        h = 200
+        O1.plotPath(h, L, totalTime, 0)
     elif Master_Flag == 'PlotError':
-        O1.plotError()
+        steps = 50
+        O1.plotError(steps, L, totalTime, 0)
     elif Master_Flag == 'EvaluateTime':
-        O1.evaluateTime()
+        hEuler = 208
+        hTrapez = 3004
+        O1.evaluateTime(hEuler, hTrapez, L, totalTime, 0)
     elif Master_Flag == 'PlotWithMass':
-        O1.plotWithMass()
+        h = 200
+        O1.plotWithMass(h, L, totalTime, 0)
     elif Master_Flag == 'PlotErrorWithMass':
-        O1.plotErrorWithMass()
+        steps = 90
+        O1.plotErrorWithMass(steps, L, totalTime, 0)
     elif Master_Flag == 'PlotVarTimestep':
-        O1.plotVarTimeStepMass()
+        TOL = 1
+        O1.plotVarTimeStepMass(TOL, L, totalTime, 0)
     elif Master_Flag == 'PlotOceanPath':
-        O2.plotPath(False)
+        map = False
+        O2.plotPath(map)
+    elif Master_Flag == 'PlotParticlePos':
+        grid = True
+        O3.plotParticlePos(grid)
         
 #end = timer()
 #O1.met2()

@@ -14,14 +14,8 @@ def f2(Y, t):
     m = 0.01
     return np.asarray([alpha/m*(f(Y[1], t) - Y[0]), Y[0]])
 
-def plotPath():
-    N = 200
-    L = 100
-    totalTime = 2*24*3600
+def plotPath(h, L, totalTime, t0):
     X0 = np.asarray([L, 0.])
-    t0 = 0
-    #h=totalTime/N
-    h=2*10**2
     XEuler = DS.forwardEuler(h, totalTime, t0, X0, f)
     XTrapezoid = DS.trapezoid(h, totalTime, t0, X0, f)
     
@@ -38,19 +32,12 @@ def plotPath():
     plt.savefig("path_oppg1.pdf")
     plt.show()
 
-def plotError():
-    L = 100
-    totalTime = 2*24*3600
+def plotError(steps, L, totalTime, t0):
     X0 = np.asarray([L, 0.])
-    t0 = 0
     
-    steps = 15# 100
     errorEuler = np.zeros(steps)
     errorTrapezoid = np.zeros(steps)
     h=np.logspace(1,5,steps)
-    #Nlist=np.logspace(2,5,steps)
-    #Nlist=np.linspace(200,50000,steps)
-    #Nlist = [10*i for i in range(1, steps+1)]
     for i in range(steps):
         Xeuler = DS.forwardEuler(h[i], totalTime, t0, X0, f)
         Xtrapez = DS.trapezoid(h[i], totalTime, t0, X0, f)
@@ -60,15 +47,15 @@ def plotError():
   
     print("Forward Euler")
     for i in range(1, steps):
-        if (errorEuler[i-1]> 10 and errorEuler[i]< 10):
-            print(h[i-1], "iterasjoner ga", errorEuler[i-1], "error")
-            print(h[i], "iterasjoner ga", errorEuler[i], "error")
+        if (errorEuler[i-1]< 10 and errorEuler[i]> 10):
+            print(h[i-1], "s tidssteg ga", errorEuler[i-1], "error")
+            print(h[i], "s tidssteg ga", errorEuler[i], "error")
     
     print("Trapezoid")
     for i in range(1, steps):
-        if (errorTrapezoid[i-1]> 10 and errorTrapezoid[i]< 10):
-            print(h[i-1], "iterasjoner ga", errorTrapezoid[i-1], "error")
-            print(h[i], "iterasjoner ga", errorTrapezoid[i], "error")
+        if (errorTrapezoid[i-1]< 10 and errorTrapezoid[i]> 10):
+            print(h[i-1], "s tidssteg ga", errorTrapezoid[i-1], "error")
+            print(h[i], "s tidssteg ga", errorTrapezoid[i], "error")
     
     
     plt.figure() 
@@ -84,14 +71,8 @@ def plotError():
     plt.savefig("Error_oppg1a.pdf")
     plt.show()
 
-def evaluateTime():
-    hEuler = 208
-    hTrapez = 3004
-    
-    L = 100
-    totalTime = 2*24*3600
+def evaluateTime(hEuler, hTrapez, L, totalTime, t0):
     X0 = np.asarray([L, 0.])
-    t0 = 0
     
     eulerT1 = timer()
     Xeuler = DS.forwardEuler(hEuler, totalTime, t0, X0, f)
@@ -133,12 +114,11 @@ def mass(N, T, L):
     return Y[:,1,:]
     
 
-def plotWithMass():
-    N = 500
-    T = 2*24*3600
-    L = 100
+def plotWithMass(h, L, totalTime, t0):
+    N = int(totalTime // h)
+    print(N)
     
-    XNum = mass(N, T, L)
+    XNum = mass(N, totalTime, L)
     XAn = massAn()
     
     plt.figure()
@@ -156,12 +136,7 @@ def plotWithMass():
     plt.show()
 
 #Fikse riktig log-scale på denne
-def plotErrorWithMass():
-    L = 100
-    totalTime = 2*24*3600
-    t0 = 0
-    
-    steps = 100
+def plotErrorWithMass(steps, L, totalTime, t0):
     error = np.zeros(steps)
     endpoint = massAn()
     hlist = [50+10*i for i in range(1, steps+1)]
@@ -238,12 +213,7 @@ def varTimeStepMass(TOL, t0, totalTime, L):
     #print(steps)
     return Y[:,1,:], t, dt
     
-def plotVarTimeStepMass():
-    L = 100
-    totalTime = 2*24*3600
-    t0 = 0
-    TOL = 1
-    
+def plotVarTimeStepMass(TOL, L, totalTime, t0):
     XNum, tNum, dtNum = varTimeStepMass(TOL, t0, totalTime, L)
     XAn = massAn()
     
