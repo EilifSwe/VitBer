@@ -4,11 +4,16 @@ import matplotlib.pyplot as plt
 def forwardEulerStep(t, dt, X, f):
     return X + dt*f(X,t)
 
-def forwardEuler(N, T, t0, X0, f):
-    dt = T/N
-    X = np.asarray([np.zeros(2) for i in range(N+1)])
+def forwardEuler(dt, T, t0, X0, f):
+    N=T/dt
+    N_int=int(N)
+    if N!=N_int:
+        N_int=N_int+1
+    X = np.asarray([np.zeros(2) for i in range(N_int+1)])        
     X[0] = X0
-    for i in range(0, N):
+    for i in range(0, N_int):
+        if i==N_int-1:
+            dt=min(dt,T-i*dt)
         X[i+1] = forwardEulerStep(i*dt, dt, X[i], f)
     return X
     
@@ -17,11 +22,16 @@ def trapezoidStep(t, dt, X, f):
     k1 = f(X + dt*k0, t +dt,)
     return X + 0.5*dt*(k0+k1)
     
-def trapezoid(N, T, t0, X0, f):
-    dt = T/N
-    X = np.asarray([np.zeros(2) for i in range(N+1)])
+def trapezoid(dt, T, t0, X0, f):
+    N=T/dt
+    N_int=int(N)
+    if N!=N_int:
+        N_int=N_int+1
+    X = np.asarray([np.zeros(2) for i in range(N_int+1)]) 
     X[0] = X0
-    for i in range(0, N):
+    for i in range(0, N_int):
+        if i==N_int-1:
+            dt=min(dt,T-i*dt)
         X[i+1] = trapezoidStep(i*dt, dt, X[i], f)
     return X
     

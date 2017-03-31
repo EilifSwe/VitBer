@@ -18,9 +18,10 @@ def plotPath():
     totalTime = 2*24*3600
     X0 = np.asarray([L, 0.])
     t0 = 0
-    
-    XEuler = DS.forwardEuler(N, totalTime, t0, X0, f)
-    XTrapezoid = DS.trapezoid(N, totalTime, t0, X0, f)
+    #h=totalTime/N
+    h=2*10**2
+    XEuler = DS.forwardEuler(h, totalTime, t0, X0, f)
+    XTrapezoid = DS.trapezoid(h, totalTime, t0, X0, f)
     
     #plott startpunkt
     plt.figure()
@@ -41,36 +42,39 @@ def plotError():
     X0 = np.asarray([L, 0.])
     t0 = 0
     
-    steps = 100
+    steps = 15# 100
     errorEuler = np.zeros(steps)
     errorTrapezoid = np.zeros(steps)
-    Nlist = [10*i for i in range(1, steps+1)]
+    h=np.logspace(1,5,steps)
+    #Nlist=np.logspace(2,5,steps)
+    #Nlist=np.linspace(200,50000,steps)
+    #Nlist = [10*i for i in range(1, steps+1)]
     for i in range(steps):
-        Xeuler = DS.forwardEuler(Nlist[i], totalTime, t0, X0, f)
-        Xtrapez = DS.trapezoid(Nlist[i], totalTime, t0, X0, f)
+        Xeuler = DS.forwardEuler(h[i], totalTime, t0, X0, f)
+        Xtrapez = DS.trapezoid(h[i], totalTime, t0, X0, f)
         
-        errorEuler[i] = np.sqrt((Xeuler[Nlist[i]-1,0] - L)**2 + Xeuler[Nlist[i]-1,1]**2)
-        errorTrapezoid[i] = np.sqrt((Xtrapez[Nlist[i]-1,0] - L)**2 + Xtrapez[Nlist[i]-1,1]**2)
+        errorEuler[i] = np.sqrt((Xeuler[-1,0] - L)**2 + Xeuler[-1,1]**2)
+        errorTrapezoid[i] = np.sqrt((Xtrapez[-1,0] - L)**2 + Xtrapez[-1,1]**2)
   
     print("Forward Euler")
     for i in range(1, steps):
         if (errorEuler[i-1]> 10 and errorEuler[i]< 10):
-            print(Nlist[i-1], "iterasjoner ga", errorEuler[i-1], "error")
-            print(Nlist[i], "iterasjoner ga", errorEuler[i], "error")
+            print(h[i-1], "iterasjoner ga", errorEuler[i-1], "error")
+            print(h[i], "iterasjoner ga", errorEuler[i], "error")
     
     print("Trapezoid")
     for i in range(1, steps):
         if (errorTrapezoid[i-1]> 10 and errorTrapezoid[i]< 10):
-            print(Nlist[i-1], "iterasjoner ga", errorTrapezoid[i-1], "error")
-            print(Nlist[i], "iterasjoner ga", errorTrapezoid[i], "error")
+            print(h[i-1], "iterasjoner ga", errorTrapezoid[i-1], "error")
+            print(h[i], "iterasjoner ga", errorTrapezoid[i], "error")
     
-    hlist = [totalTime/(i-1) for i in Nlist]
     
     plt.figure() 
-    plt.semilogx()
-    plt.semilogy()
-    plt.plot(hlist, errorEuler,label='Error - Euler')
-    plt.plot(hlist, errorTrapezoid,label='Error - Trapezoid')
+    
+    plt.plot(h, errorEuler,label='Error - Euler')
+    plt.plot(h, errorTrapezoid,label='Error - Trapezoid')
+    plt.xscale('log')
+    plt.yscale('log')
     plt.title("Feil for Euler og Trapezoid",fontsize=15)
     plt.xlabel("Tidssteg, $h$",fontsize=15)
     plt.ylabel("Error",fontsize=15)
@@ -86,13 +90,14 @@ def evaluateTime():
     totalTime = 2*24*3600
     X0 = np.asarray([L, 0.])
     t0 = 0
-    
+    hEuler=totalTime/NEuler
+    hTrapez=totalTime/NTrapez
     eulerT1 = timer()
-    Xeuler = DS.forwardEuler(NEuler, totalTime, t0, X0, f)
+    Xeuler = DS.forwardEuler(hEuler, totalTime, t0, X0, f)
     eulerT2 = timer()
     
     trapezT1 = timer()
-    Xtrapez = DS.trapezoid(NTrapez, totalTime, t0, X0, f)
+    Xtrapez = DS.trapezoid(hTrapez, totalTime, t0, X0, f)
     trapezT2 = timer()
     
     print("Euler time:", eulerT2 - eulerT1)
@@ -149,6 +154,7 @@ def plotWithMass():
     #plt.plot(XAn[0], XAn[1], 'ro', color = 'g')
     plt.show()
 
+#Fikse riktig log-scale på denne
 def plotErrorWithMass():
     L = 100
     totalTime = 2*24*3600
@@ -171,7 +177,8 @@ def plotErrorWithMass():
     plt.plot(hlist, error,label="Global Error - Trapezoid")
     plt.title("Global Error ",fontsize=15)
     plt.xlabel("Tidssteg, $h$",fontsize=15)
-    plt.ylabel("Error",fontsize=15) 
+    plt.ylabel("Error",fontsize=15)
+    
     plt.legend(loc=2)
     plt.savefig("Globalerror_oppg1c.pdf")
     plt.show()
@@ -242,7 +249,7 @@ def plotVarTimeStepMass():
     
     
     plt.figure()
-    plt.plot(XNum[:,0], XNum[:,1],label="Trapezoid")
+    plt.plot(XNum[:,0], XNum[:,1],label="Varierende tidsstegmetode")
     plt.plot(XNum[0,0], XNum[0,1],'x')
     plt.title("Banen til $x(t)$ med variabelt tidssteg",fontsize=15)
     plt.xlabel("Posisjon, $x$",fontsize=15)
