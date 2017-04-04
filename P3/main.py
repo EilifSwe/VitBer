@@ -33,11 +33,12 @@ if __name__ == "__main__":
         steps = 90
         O1.plotErrorWithMass(steps, L, totalTime, 0)
     elif Master_Flag == 'PlotVarTimestep':
-        TOL = 1
+        TOL = 50000
         O1.plotVarTimeStepMass(TOL, L, totalTime, 0)
     elif Master_Flag == 'PlotOceanPath':
         map = True
         O2.plotPath(map)
     elif Master_Flag == 'PlotParticlePos':
         grid = False
-        O3.plotParticlePos(grid)
+        plotAllOnMap=True
+        O3.plotParticlePos(grid,plotAllOnMap)
