@@ -41,58 +41,17 @@ def plotAllOnMap(list):
     for i in range(0, N+1):
         if (i % (2 * 24) == 0):
             print(i // 24)
-            ax = plt.subplot(countlist[counter], projection=ccrs.NorthPolarStereo())
+            ax = plt.subplot(countlist[counter],projection=ccrs.NorthPolarStereo())
             ax.add_feature(land_10m)
             ax.coastlines(resolution='10m')
             ax.set_extent((0, 6, 59, 61))
+            ax.set_title("Dag " + str(int(i/24)))
             lons, lats = pyproj.transform(p1, p2, list[0, :], list[1, :])
             ax.scatter(lons, lats, transform=ccrs.PlateCarree(), zorder=2, marker='.')
             counter += 1
         list = DS.trapezoidStep(t0 + i * h, h, list, f)
+    print("Done plotting.")
 
-    '''
-    #Nr 1:
-    plt.subplot(321)
-    list = DS.trapezoidStep(t0 + 0 * 24*h, h, list, f)
-    lons, lats = pyproj.transform(p1, p2, list[0, :], list[1, :])
-    ax.scatter(lons, lats, transform=ccrs.PlateCarree(), zorder=2, marker='.')
-
-    #nr 2:
-    plt.subplot(322)
-    list = DS.trapezoidStep(t0 + 2 *24* h, h, list, f)
-    lons, lats = pyproj.transform(p1, p2, list[0, :], list[1, :])
-
-    ax.scatter(lons, lats, transform=ccrs.PlateCarree(), zorder=2, marker='.')
-    
-    #Nr 3:
-    plt.subplot(323)
-    list = DS.trapezoidStep(t0 + 4 *24* h, h, list, f)
-    lons, lats = pyproj.transform(p1, p2, list[0, :], list[1, :])
-
-    ax.scatter(lons, lats, transform=ccrs.PlateCarree(), zorder=2, marker='.')
-
-
-    #nr 4:
-    plt.subplot(324)
-    list = DS.trapezoidStep(t0 + 6 * 24*h, h, list, f)
-    lons, lats = pyproj.transform(p1, p2, list[0, :], list[1, :])
-
-    ax.scatter(lons, lats, transform=ccrs.PlateCarree(), zorder=2, marker='.')
-
-    #nr 5:
-    plt.subplot(325)
-    list = DS.trapezoidStep(t0 + 8 *24* h, h, list, f)
-    lons, lats = pyproj.transform(p1, p2, list[0, :], list[1, :])
-
-    ax.scatter(lons, lats, transform=ccrs.PlateCarree(), zorder=2, marker='.')
-
-    #nr: 6
-    plt.subplot(326)
-    list = DS.trapezoidStep(t0 + 10 *24* h, h, list, f)
-    lons, lats = pyproj.transform(p1, p2, list[0, :], list[1, :])
-
-    ax.scatter(lons, lats, transform=ccrs.PlateCarree(), zorder=2, marker='.')
-    '''
 
 
 def plotWithGrid(list, d):
@@ -109,21 +68,60 @@ def plotWithGrid(list, d):
     
     fig = plt.figure(figsize=(12,8))
     ax  = plt.axes(projection=ccrs.NorthPolarStereo())
-    land_10m = cfeature.NaturalEarthFeature('physical', 'land', '10m', color = '#dddddd')
+    land_10m = cfeature.NaturalEarthFeature('physical', 'land', '10m', color='#dddddd')
     ax.add_feature(land_10m)
     ax.coastlines(resolution='10m')
     p1 = pyproj.Proj(d.projection_stere.proj4)
     p2 = pyproj.Proj(proj='latlong')
     lons, lats = pyproj.transform(p1, p2, x, y)
-    
+
     cax = ax.pcolormesh(lons, lats, C, transform=ccrs.PlateCarree(), zorder=2, cmap='hot_r')
     cbar = fig.colorbar(cax, ax = ax, extend = 'both')
     
     ax.set_extent((-3, 7, 58, 62))
     
-    
-    
+def plotWithGridAll3b(list):
+    Nx, Ny = 200, 200
+    x = -3010000 + 800 * np.arange(Nx)
+    y = -1210000 + 800 * np.arange(Ny)
 
+    totalTime = 10 * 24 * 3600
+    h = 3600
+    N = totalTime // h
+
+    x, y = np.meshgrid(x, y)
+
+
+
+    t0 = np.datetime64('2017-02-01T12:00:00')
+    d = xr.open_dataset('NorKyst-800m.nc')
+    f = IC.Interpolator(dataset=d)
+    plt.style.use('bmh')
+
+    p1 = pyproj.Proj(d.projection_stere.proj4)
+    p2 = pyproj.Proj(proj='latlong')
+    land_10m = cfeature.NaturalEarthFeature('physical', 'land', '10m', color='#dddddd')
+    counter = 0
+    countlist = [321, 322, 323, 324, 325, 326]
+    fig=plt.figure()
+    for i in range(0, 100):
+        if (i % (2 * 24) == 0):
+            print(i // 24)
+            C = np.array([np.zeros(Nx) for i in range(Ny)])
+            for p in range(len(list[0])):
+                C[int((list[1, p] + 1210000) // 800), int((list[0, p] + 3010000) // 800)] += 1
+            ax = plt.subplot(countlist[counter],projection=ccrs.NorthPolarStereo())
+            ax.add_feature(land_10m)
+            ax.coastlines(resolution='10m')
+            ax.set_extent((0, 6, 59, 61))
+            ax.set_title("Dag " + str(int(i/24)))
+            lons, lats = pyproj.transform(p1, p2, x, y)
+            cax = ax.pcolormesh(lons, lats, C, transform=ccrs.PlateCarree(), zorder=2, cmap='hot_r')
+            counter += 1
+        list = DS.trapezoidStep(t0 + i * h, h, list, f)
+    print("Done plotting.")
+    cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+    cbar = fig.colorbar(cax, ax=cbar_ax)
 def plotParticlePos(grid,allOnMap):
     Np = 10000
     totalTime = 10*24*3600
@@ -138,12 +136,18 @@ def plotParticlePos(grid,allOnMap):
     xList = [xMin + np.random.random() * deltaX for i in range(Np)]
     yList = [yMin + np.random.random() * deltaY for i in range(Np)]
     particleList = np.array(xList + yList).reshape(2, Np)
-    print(particleList)
-    print("hei")
 
-    if allOnMap:
+
+    if (allOnMap and not grid):
         plotAllOnMap(particleList)
+        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.5, hspace=None)
         plt.savefig("Concentration_3a_all.pdf")
+    elif (allOnMap and grid):
+        plotWithGridAll3b(particleList)
+
+        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.5, hspace=None)
+        plt.savefig("Concentration_3b_all.pdf")
+
     else:
         t0 = np.datetime64('2017-02-01T12:00:00')
         d  = xr.open_dataset('NorKyst-800m.nc')
@@ -175,6 +179,6 @@ def plotParticlePos(grid,allOnMap):
             plotOnMap(particleList, d)
             plt.savefig("Concentration_oppg3a_end.pdf")
 
-    
-    
+    plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.5,hspace=None)
+    #plt.tight_layout()
     plt.show()
