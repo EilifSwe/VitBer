@@ -14,17 +14,19 @@ def f2(Y, t):
     m = 0.01
     return np.asarray([alpha/m*(f(Y[1], t) - Y[0]), Y[0]])
 
+#Oppgave 1a) og 1b)
+
 def plotPath(h, L, totalTime, t0):
     X0 = np.asarray([L, 0.])
     XEuler = DS.forwardEuler(h, totalTime, t0, X0, f)
     XTrapezoid = DS.trapezoid(h, totalTime, t0, X0, f)
     
-    #plott startpunkt
+    
     plt.figure()
     plt.plot(XEuler[:,0],XEuler[:,1],label='Euler')
     plt.plot(XTrapezoid[:,0],XTrapezoid[:,1],label='Trapezoid')
-    plt.plot(XEuler[0,0],XEuler[0,1],'x')
-    plt.plot(XTrapezoid[0,0],XTrapezoid[0,1],'x')
+    plt.plot(XEuler[0,0],XEuler[0,1],'x')           #startpunkt
+    plt.plot(XTrapezoid[0,0],XTrapezoid[0,1],'x')   #startpunkt
     plt.title("Banen til x(t)",fontsize=15)
     plt.xlabel("Posisjon, $x$ (m)",fontsize=15)
     plt.ylabel("Posisjon, $y$ (m)",fontsize=15)
@@ -32,6 +34,7 @@ def plotPath(h, L, totalTime, t0):
     plt.savefig("path_oppg1.pdf")
     plt.show()
 
+    
 def plotError(steps, L, totalTime, t0):
     X0 = np.asarray([L, 0.])
     
@@ -42,7 +45,8 @@ def plotError(steps, L, totalTime, t0):
         Xeuler = DS.forwardEuler(h[i], totalTime, t0, X0, f)
         Xtrapez = DS.trapezoid(h[i], totalTime, t0, X0, f)
         
-        errorEuler[i] = np.sqrt((Xeuler[-1,0] - L)**2 + Xeuler[-1,1]**2)
+        #Differansen mellom sluttpunkt for euler/trapes og analytisk, kvadrert.
+        errorEuler[i] = np.sqrt((Xeuler[-1,0] - L)**2 + Xeuler[-1,1]**2)       
         errorTrapezoid[i] = np.sqrt((Xtrapez[-1,0] - L)**2 + Xtrapez[-1,1]**2)
   
     print("Forward Euler")
@@ -59,7 +63,6 @@ def plotError(steps, L, totalTime, t0):
     
     
     plt.figure() 
-    
     plt.plot(h, errorEuler,label='Error - Euler')
     plt.plot(h, errorTrapezoid,label='Error - Trapezoid')
     plt.xscale('log')
@@ -71,7 +74,7 @@ def plotError(steps, L, totalTime, t0):
     plt.savefig("Error_oppg1a.pdf")
     plt.show()
 
-#ha med
+#Sammenligner kjøretid for euler og trapes
 def evaluateTime(hEuler, hTrapez, L, totalTime, t0):
     X0 = np.asarray([L, 0.])
     
@@ -86,6 +89,7 @@ def evaluateTime(hEuler, hTrapez, L, totalTime, t0):
     print("Euler time:", eulerT2 - eulerT1, "Error:", np.sqrt((Xeuler[-1,0] - L)**2 + Xeuler[-1,1]**2))
     print("Trapez time:", trapezT2 - trapezT1, "Error:",np.sqrt((Xtrapez[-1,0] - L)**2 + Xtrapez[-1,1]**2))
 
+    
 def massAn():
     L = 1.0E+02
     alpha = 5.0E-05
@@ -104,7 +108,7 @@ def massAn():
     t = 2*24*3600
     X = V.dot(C*np.exp(lams*t)) # pun
     return [X[0].real, X[1].real]
-    #print(’Position after 48 hours = ’, X[0].real, X[1].real)
+    
 
 def mass(N, T, L):
     dt = T/(N-1)
@@ -123,31 +127,27 @@ def plotWithMass(h, L, totalTime, t0):
     XAn = massAn()
     
     plt.figure()
-    plt.plot(XNum[0,0],XNum[0,1],'x')
-    
-    
+    plt.plot(XNum[0,0],XNum[0,1],'x')               #startpunkt
     plt.plot(XNum[:,0],XNum[:,1],label="Trapezoid")
     plt.title("Banen til $x(t)$",fontsize=15)
     plt.xlabel("Posisjon, $x$ (m)",fontsize=15)
     plt.ylabel("Posisjon, $y$ (m)",fontsize=15)
     plt.legend(loc=4)
-    plt.plot(XAn[0], XAn[1], 'ro', color='g')
+    plt.plot(XAn[0], XAn[1], 'ro', color='g')       #sluttpunkt
     plt.savefig("Bane_oppg1c.pdf")
-
     plt.show()
 
 
 def plotErrorWithMass(steps, L, totalTime, t0):
     error = np.zeros(steps)
     endpoint = massAn()
+    
+     #Plott med divergens(h>400 sekunder)
     hlist = [50+10*i for i in range(1, steps+1)]
     Nlist = [totalTime//(i-1) for i in hlist]
-    for i in range(steps):
+    for i in range(steps):  #lager liste over feil for gitte steglengder.
         X = mass(Nlist[i], totalTime, L)
         error[i] = np.sqrt((X[-1,0] - endpoint[0])**2 + (X[-1,1]-endpoint[1])**2)
-    
-    
-    #Plott med divergens
     figure=plt.figure()
     ax = figure.add_subplot(111)
     ax.loglog(hlist, error,label="Global Error - Trapezoid")
@@ -155,8 +155,7 @@ def plotErrorWithMass(steps, L, totalTime, t0):
     ax.set_xlabel("Tidssteg, $h$ (s)",fontsize=15)
     ax.set_ylabel("Error, (m)",fontsize=15)
     ax.set_xlim([50,600])
-    
-    xAxis = plt.gca().xaxis
+    xAxis = plt.gca().xaxis     #Legger til ekstra ticks på aksene.
     xAxis.set_minor_locator(TSM_C.MinorSymLogLocator(1))
     xAxis.set_minor_formatter(FormatStrFormatter("%.0f"))
     plt.grid(b=True, which='both', color='0.3', linestyle=':')
@@ -167,7 +166,6 @@ def plotErrorWithMass(steps, L, totalTime, t0):
     #Plott uten divergens (h<400 sekunder)
     hlist=np.linspace(100,395,steps)
     Nlist = [int(totalTime//(i-1)) for i in hlist]
-    #print(Nlist)
     for i in range(steps):
         X = mass(Nlist[i], totalTime, L)
         error[i] = np.sqrt((X[-1,0] - endpoint[0])**2 + (X[-1,1]-endpoint[1])**2)
@@ -189,8 +187,7 @@ def plotErrorWithMass(steps, L, totalTime, t0):
     plt.grid(b=True, which='both', color='0.3', linestyle=':')
     plt.savefig("Globalerror_oppg1c_test.pdf")
     plt.show()
-   
-        
+    
 def varTimeStepMass(TOL, t0, totalTime, L):
     Y = []
     t = []
@@ -211,29 +208,26 @@ def varTimeStepMass(TOL, t0, totalTime, L):
         dt.append(currentdt)
         steps += 1
     Y = np.asarray(Y)
-    #print(steps)
     return Y[:,1,:], t, dt
     
 def plotVarTimeStepMass(TOL, L, totalTime, t0):
     XNum, tNum, dtNum = varTimeStepMass(TOL, t0, totalTime, L)
     XAn = massAn()
     
+    #Størrelse på tidssteg
     plt.figure()
-    #plt.plot(tNum, dtNum, 'o',label='Tidssteg')
-    plt.plot(tNum, dtNum, label='Tidssteg')
-    plt.title("Banen til $x(t)$ med variabelt tidssteg",fontsize=15)
+    plt.plot(tNum, dtNum,'o', label='Tidssteg')
+    plt.title("Størrelse på tidssteg",fontsize=15)
     plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
     plt.xlim()
     plt.xlabel("Tidsutvikling, $t$ (s)",fontsize=15)
-    plt.ylabel("Endring i tid, $dt (s) $",fontsize=15)
-    
+    plt.ylabel("Endring i tid, $dt$ (s)",fontsize=15)
     plt.ylim([0,500])
-    
     plt.legend()
     plt.savefig("Tid_oppg1d.pdf")
     plt.show()
     
-    
+    #Banen til x(t) med variabelt tidssteg
     plt.figure()
     plt.plot(XNum[:,0], XNum[:,1],label="Varierende tidsstegmetode")
     plt.plot(XNum[0,0], XNum[0,1],'x')
