@@ -1,7 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
 import xarray as xr
-from scipy.interpolate import RectBivariateSpline
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import pyproj
@@ -20,7 +19,7 @@ def plotOnMap(list, d):
     p2 = pyproj.Proj(proj='latlong')
     lons, lats = pyproj.transform(p1, p2, list[0,:], list[1,:])
     
-    ax.scatter(lons, lats, transform=ccrs.PlateCarree(), zorder=2, marker = '.')
+    ax.scatter(lons, lats, transform=ccrs.PlateCarree(), zorder=2, marker = '.',c='b')
     
     ax.set_extent((0, 6, 59, 61))
 
@@ -38,7 +37,7 @@ def plotAllOnMap(list):
     counter=0
     countlist=[321,322,323,324,325,326]
 
-    for i in range(0, N+1):
+    for i in range(0, 5):
         if (i % (2 * 24) == 0):
             print(i // 24)
             ax = plt.subplot(countlist[counter],projection=ccrs.NorthPolarStereo())
@@ -47,7 +46,7 @@ def plotAllOnMap(list):
             ax.set_extent((0, 6, 59, 61))
             ax.set_title("Dag " + str(int(i/24)))
             lons, lats = pyproj.transform(p1, p2, list[0, :], list[1, :])
-            ax.scatter(lons, lats, transform=ccrs.PlateCarree(), zorder=2, marker='.')
+            ax.scatter(lons, lats, transform=ccrs.PlateCarree(), zorder=2, marker='.', c='r')
             counter += 1
         list = DS.trapezoidStep(t0 + i * h, h, list, f)
     print("Done plotting.")
@@ -91,8 +90,6 @@ def plotWithGridAll3b(list):
 
     x, y = np.meshgrid(x, y)
 
-
-
     t0 = np.datetime64('2017-02-01T12:00:00')
     d = xr.open_dataset('NorKyst-800m.nc')
     f = IC.Interpolator(dataset=d)
@@ -104,7 +101,7 @@ def plotWithGridAll3b(list):
     counter = 0
     countlist = [321, 322, 323, 324, 325, 326]
     fig=plt.figure()
-    for i in range(0, 100):
+    for i in range(0, N+1):
         if (i % (2 * 24) == 0):
             print(i // 24)
             C = np.array([np.zeros(Nx) for i in range(Ny)])
@@ -113,7 +110,7 @@ def plotWithGridAll3b(list):
             ax = plt.subplot(countlist[counter],projection=ccrs.NorthPolarStereo())
             ax.add_feature(land_10m)
             ax.coastlines(resolution='10m')
-            ax.set_extent((0, 6, 59, 61))
+            ax.set_extent((1.1, 3.3, 59.4, 60.7))
             ax.set_title("Dag " + str(int(i/24)))
             lons, lats = pyproj.transform(p1, p2, x, y)
             cax = ax.pcolormesh(lons, lats, C, transform=ccrs.PlateCarree(), zorder=2, cmap='hot_r')
@@ -121,7 +118,10 @@ def plotWithGridAll3b(list):
         list = DS.trapezoidStep(t0 + i * h, h, list, f)
     print("Done plotting.")
     cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-    cbar = fig.colorbar(cax, ax=cbar_ax)
+    cbar = fig.colorbar(cax, cax=cbar_ax)
+
+
+
 def plotParticlePos(grid,allOnMap):
     Np = 10000
     totalTime = 10*24*3600
@@ -145,7 +145,7 @@ def plotParticlePos(grid,allOnMap):
     elif (allOnMap and grid):
         plotWithGridAll3b(particleList)
 
-        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.5, hspace=None)
+        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.7, hspace=None)
         plt.savefig("Concentration_3b_all.pdf")
 
     else:
