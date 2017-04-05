@@ -35,40 +35,32 @@ def trapezoid(dt, T, t0, X0, f):
         X[i+1] = trapezoidStep(i*dt, dt, X[i], f)
     return X
     
-def varTimeTrapezoidStep(t, X, f, TOL, lastdt, endt):
-    k0 = f(X,t) #stigning  i startpunkt
+def varTimeTrapezoidStep(t, X, f, TOL, dt, e, endt):
+    if(e < 0.5*TOL):
+        dt = 0.8*np.sqrt(TOL/e)*dt
     
-    testk1 = f(X+lastdt*k0, t + lastdt) 
-    dist = np.sqrt((testk1[1][0]-k0[1][0])**2 + (testk1[1][1]-k0[1][1])**2)
-    dt = 0.8*np.sqrt((2*TOL)*lastdt/dist)
-    if(t + dt > endt):
-        dt = endt -t
+    k0 = f(X,t)
+    k1 = f(X+dt*k0, t + dt)
     
-    
-    k1 = f(X +dt*k0, t+ dt)
-    while(0.5*dt*np.sqrt((k1[1][0]-k0[1][0])**2 + (k1[1][1]-k0[1][1])**2)>TOL):
-        dt /= 2
-        k1 = f(X +dt * k0, t + dt)
+    while(True):
+        e = np.linalg.norm(k1-k0)*dt/2
+        
+        if(e < TOL):
+            break
+        
+        if(np.isfinite(e)):
+            dt = 0.8*np.sqrt(TOL/e)*dt
+        else:
+            dt /= 2
+            
+        if(t + dt > endt):
+            dt = endt - t
+        
+        k1 = f(X+dt*k0, t + dt)
     
     newX = X + 0.5*dt*(k0+k1)
     newt = t + dt
-    if (0.5*dt*np.sqrt((k1[1][0]-k0[1][0])**2 + (k1[1][1]-k0[1][1])**2)<0.1*TOL):
-        dt *= 2
-        
-    return newX, newt, dt
     
-def varTimeTrapezoid(L, x0, y0, f, TOL):
-    maxN = 100
-    x = np.zeros(maxN)
-    y = np.zeros(maxN)
-    y[0] = y0
-    x[0] = x0
-    delX=L/100
-    for i in range(0, maxN-1):
-        (x[i+1], y[i+1]),delX= varTimeTrapezoidStep(x[i], L, y[i], f, TOL,delX)
-        if(x[i+1] >= L):
-            break
-    return x, y
-    
+    return newX, newt, dt, e
 
     
