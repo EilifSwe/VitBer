@@ -71,6 +71,7 @@ def plotError(steps, L, totalTime, t0):
     plt.savefig("Error_oppg1a.pdf")
     plt.show()
 
+#ha med
 def evaluateTime(hEuler, hTrapez, L, totalTime, t0):
     X0 = np.asarray([L, 0.])
     
@@ -110,7 +111,7 @@ def mass(N, T, L):
     Y = np.asarray([np.asarray([np.zeros(2),np.zeros(2)]) for i in range(N)])
     Y[0] = np.asarray([np.asarray([0,0]),np.asarray([L,0])])
     for i in range(0, N-1):
-        Y[i+1] = DS.forwardEulerStep(i*dt, dt, Y[i], f2)
+        Y[i+1] = DS.trapezoidStep(i*dt, dt, Y[i], f2)
     return Y[:,1,:]
     
 
@@ -130,12 +131,12 @@ def plotWithMass(h, L, totalTime, t0):
     plt.xlabel("Posisjon, $x$ (m)",fontsize=15)
     plt.ylabel("Posisjon, $y$ (m)",fontsize=15)
     plt.legend(loc=4)
+    plt.plot(XAn[0], XAn[1], 'ro', color='g')
     plt.savefig("Bane_oppg1c.pdf")
-    
-    #plt.plot(XAn[0], XAn[1], 'ro', color = 'g')
+
     plt.show()
 
-#Fikse riktig log-scale på denne
+
 def plotErrorWithMass(steps, L, totalTime, t0):
     error = np.zeros(steps)
     endpoint = massAn()
@@ -164,7 +165,7 @@ def plotErrorWithMass(steps, L, totalTime, t0):
     plt.show()
     
     #Plott uten divergens (h<400 sekunder)
-    hlist=np.linspace(100,390,steps)
+    hlist=np.linspace(100,395,steps)
     Nlist = [int(totalTime//(i-1)) for i in hlist]
     #print(Nlist)
     for i in range(steps):
@@ -183,7 +184,7 @@ def plotErrorWithMass(steps, L, totalTime, t0):
     xAxis.set_minor_formatter(FormatStrFormatter("%.0f"))
     yAxis = plt.gca().yaxis
     yAxis.set_minor_locator(TSM_C.MinorSymLogLocator(0))
-    yAxis.set_minor_formatter(FormatStrFormatter("%.0f"))
+    yAxis.set_minor_formatter(FormatStrFormatter("%.2f"))
     ax.legend()
     plt.grid(b=True, which='both', color='0.3', linestyle=':')
     plt.savefig("Globalerror_oppg1c_test.pdf")
@@ -201,8 +202,9 @@ def varTimeStepMass(TOL, t0, totalTime, L):
     currentY = np.asarray([np.asarray([0,0]),np.asarray([L,0])])
     currentt = t0
     currentdt = 400
+    e=1
     while (currentt < totalTime):
-        currentY, currentt, currentdt = DS.varTimeTrapezoidStep(currentt, currentY, f2, TOL, currentdt, totalTime)
+        currentY, currentt, currentdt,e = DS.varTimeTrapezoidStep(currentt, currentY, f2, TOL, currentdt,e, totalTime)
         
         Y.append(currentY)
         t.append(currentt)
@@ -217,7 +219,8 @@ def plotVarTimeStepMass(TOL, L, totalTime, t0):
     XAn = massAn()
     
     plt.figure()
-    plt.plot(tNum, dtNum, 'o',label='Tidssteg')
+    #plt.plot(tNum, dtNum, 'o',label='Tidssteg')
+    plt.plot(tNum, dtNum, label='Tidssteg')
     plt.title("Banen til $x(t)$ med variabelt tidssteg",fontsize=15)
     plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
     plt.xlim()
@@ -234,6 +237,7 @@ def plotVarTimeStepMass(TOL, L, totalTime, t0):
     plt.figure()
     plt.plot(XNum[:,0], XNum[:,1],label="Varierende tidsstegmetode")
     plt.plot(XNum[0,0], XNum[0,1],'x')
+    plt.plot(XAn[0], XAn[1], 'ro', color='g')
     plt.title("Banen til $x(t)$ med variabelt tidssteg",fontsize=15)
     plt.xlabel("Posisjon, $x$ (m) ",fontsize=15)
     plt.ylabel("Posisjon, $y$ (m)",fontsize=15)
