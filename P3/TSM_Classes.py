@@ -1,3 +1,5 @@
+#A file for  adding minorLog-labels to logarithmic plots.
+
 import numpy as np
 #import TSM_UtilityFunctions as TSM_u
 from matplotlib.ticker import Locator
