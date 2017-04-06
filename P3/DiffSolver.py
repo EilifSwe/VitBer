@@ -44,8 +44,7 @@ def varTimeTrapezoidStep(t, X, f, TOL, dt, e, endt):
     k1 = f(X+dt*k0, t + dt)
     
     while(True):
-        e = np.linalg.norm(k1-k0)*dt/2  #linalg.norm sjekker XXXXX
-        
+        e = np.linalg.norm(k1-k0)*dt/2  #linalg.norm gir feilen i absoluttverdi.
         if(e < TOL):
             break
         
