@@ -17,6 +17,7 @@ import Oppgave1 as O1
 import DiffSolver as DS
 import Interpolator_Class as IC
 
+#Plotter en partikkels bane for 3 ulike tidspunkt, og 3 partikler på ulike steder til samme tid.
 def plotPath(map):
     totalTime = 10*24*3600
     h = 3600
@@ -50,27 +51,27 @@ def plotPath(map):
         X3[i+1] = DS.trapezoidStep(t2 + i*dt, dt, X3[i], f)
         
     
-    if(map):
+    if(map): #Plotter på kart med 3 ulike startposisjoner.
         fig = plt.figure(figsize=(12,8))
         ax  = plt.axes(projection=ccrs.NorthPolarStereo())
         land_10m = cfeature.NaturalEarthFeature('physical', 'land', '10m', color = '#dddddd')
         ax.add_feature(land_10m)
         ax.coastlines(resolution='10m')
-        p1 = pyproj.Proj(d.projection_stere.proj4)
-        p2 = pyproj.Proj(proj='latlong')
+        
+        #Transformerer fra x,y til lat,long:
+        p1 = pyproj.Proj(d.projection_stere.proj4) 
+        p2 = pyproj.Proj(proj='latlong')           
         lons0, lats0 = pyproj.transform(p1, p2, X1[:,0,0], X1[:,1,0])
         lons1, lats1 = pyproj.transform(p1, p2, X2[:,0,0], X2[:,1,0])
         lons2, lats2 = pyproj.transform(p1, p2, X3[:,0,0], X3[:,1,0])
         
-        ax.plot(lons0, lats0, transform=ccrs.PlateCarree(), zorder=2)
-        ax.plot(lons1, lats1, transform=ccrs.PlateCarree(), zorder=2)
-        ax.plot(lons2, lats2, transform=ccrs.PlateCarree(), zorder=2)
-        
-        #ax.set_extent((-5, 15, 57, 67))
-        ax.set_extent((-3, 7, 58, 62))
-    
+        ax.plot(lons0, lats0, transform=ccrs.PlateCarree(), zorder=2,label="Posisjon 1: ",lons0,",",lats0)
+        ax.plot(lons1, lats1, transform=ccrs.PlateCarree(), zorder=2,label="Posisjon 2: ",lons1,",",lats1)
+        ax.plot(lons2, lats2, transform=ccrs.PlateCarree(), zorder=2,label="Posisjon 3: ",lons2,",",lats2)
+        ax.set_extent((-3, 7, 58, 62))      #kartutsnittets størrelse.
         plt.savefig("BaneMap_oppg2a.pdf")
-    else:
+        
+    else: #Partikler med lik startposisjon til forskjellig tid.
         plt.figure()
         plt.plot(X1[:,0,0], X1[:,1,0],label="$t_0$ = 1. Feb")
         plt.plot(X2[:,0,0], X2[:,1,0],label="$t_0$= 5. Feb")
@@ -83,11 +84,6 @@ def plotPath(map):
         plt.legend(loc=2)
         
         plt.savefig("BaneNormal_oppg2a.pdf")
-        
-        
-   
-    
-    
+
     plt.style.use('bmh')
-    #plt.plot(X[:,0,0],X[:,1,0])
     plt.show()
