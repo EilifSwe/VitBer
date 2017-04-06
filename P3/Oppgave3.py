@@ -8,6 +8,7 @@ import pyproj
 import DiffSolver as DS
 import Interpolator_Class as IC
 
+#Plotte 1 figur
 def plotOnMap(list, d):
     fig = plt.figure(figsize=(12, 8))
     ax  = plt.axes(projection=ccrs.NorthPolarStereo())
@@ -22,7 +23,8 @@ def plotOnMap(list, d):
     ax.scatter(lons, lats, transform=ccrs.PlateCarree(), zorder=2, marker = '.',c='b')
     
     ax.set_extent((0, 6, 59, 61))
-
+    
+#6 subplots for oppg 3a)
 def plotAllOnMap(list):
     land_10m = cfeature.NaturalEarthFeature('physical', 'land', '10m', color='#dddddd')
     plt.style.use('bmh')
@@ -52,7 +54,7 @@ def plotAllOnMap(list):
     print("Done plotting.")
 
 
-
+#plotte enkeltvis med konsentrasjon, 3b)
 def plotWithGrid(list, d):
     Nx, Ny = 200, 200
     x = -3010000 + 800 * np.arange(Nx)
@@ -79,6 +81,7 @@ def plotWithGrid(list, d):
     
     ax.set_extent((-3, 7, 58, 62))
     
+#Plotte 6 subplots med konsentrasjon, oppg3a),    
 def plotWithGridAll3b(list):
     Nx, Ny = 200, 200
     x = -3010000 + 800 * np.arange(Nx)
@@ -116,12 +119,13 @@ def plotWithGridAll3b(list):
             cax = ax.pcolormesh(lons, lats, C, transform=ccrs.PlateCarree(), zorder=2, cmap='hot_r')
             counter += 1
         list = DS.trapezoidStep(t0 + i * h, h, list, f)
-    print("Done plotting.")
+    print("Done computing. Plotting left.")
     cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
     cbar = fig.colorbar(cax, cax=cbar_ax)
 
 
-
+#Plotte partiklene i 3a) og 3b).
+#
 def plotParticlePos(grid,allOnMap):
     Np = 10000
     totalTime = 10*24*3600
@@ -138,17 +142,19 @@ def plotParticlePos(grid,allOnMap):
     particleList = np.array(xList + yList).reshape(2, Np)
 
 
-    if (allOnMap and not grid):
+    if (allOnMap and not grid): #Subplots, oppg 3a)
         plotAllOnMap(particleList)
+        #justerer subplottenes plassering
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.5, hspace=None)
         plt.savefig("Concentration_3a_all.pdf")
-    elif (allOnMap and grid):
+        
+    elif (allOnMap and grid):   #subplots (med konsentrasjon), oppg 3b)
         plotWithGridAll3b(particleList)
-
+        #justerer subplottenes plassering
         plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.7, hspace=None)
         plt.savefig("Concentration_3b_all.pdf")
 
-    else:
+    else:   #enkeltplott
         t0 = np.datetime64('2017-02-01T12:00:00')
         d  = xr.open_dataset('NorKyst-800m.nc')
         f  = IC.Interpolator(dataset=d)
@@ -159,26 +165,24 @@ def plotParticlePos(grid,allOnMap):
         for i in range(0, N):
             if(i % (2*24) == 0):
                 print(i//24)
-                if(grid):
+                if(grid):   #Med konsentrasjon, oppg 3b)
 
                     plotWithGrid(particleList, d)
                     plt.savefig("ConcentrationGrid_oppg3b"+str(i)+".pdf")
                     counter+=1
 
-                else:
+                else:      #oppg 3a)
                     plotOnMap(particleList, d)
                     plt.savefig("Concentration_oppg3a"+str(i)+".pdf")
                     counter+=1
             particleList = DS.trapezoidStep(t0 + i*h, h, particleList, f)
 
-        if(grid):
+        if(grid):   #Siste dag, oppg 3b)
             plotWithGrid(particleList, d)
             plt.savefig("ConcentrationGrid_oppg3b_end.pdf")
 
-        else:
+        else:       #Siste dag, oppg 3a)
             plotOnMap(particleList, d)
             plt.savefig("Concentration_oppg3a_end.pdf")
 
-    plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=-0.5,hspace=None)
-    #plt.tight_layout()
     plt.show()
