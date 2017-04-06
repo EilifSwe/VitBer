@@ -111,10 +111,13 @@ def massAn():
     
 
 def mass(N, T, L):
-    dt = T/(N-1)
+    dt = T/(N-1) #Tidssteg
+    #Liste av posisjon og fart i et steg [[vx,vy],[x,y]]
     Y = np.asarray([np.asarray([np.zeros(2),np.zeros(2)]) for i in range(N)])
+    #Starter i [[0,0],[L,0]]
     Y[0] = np.asarray([np.asarray([0,0]),np.asarray([L,0])])
     for i in range(0, N-1):
+        #Et steg
         Y[i+1] = DS.trapezoidStep(i*dt, dt, Y[i], f2)
     return Y[:,1,:]
     
@@ -142,7 +145,7 @@ def plotErrorWithMass(steps, L, totalTime, t0):
     error = np.zeros(steps)
     endpoint = massAn()
     
-     #Plott med divergens(h>400 sekunder)
+    #Plott med divergens(h>400 sekunder)
     hlist = [50+10*i for i in range(1, steps+1)]
     Nlist = [totalTime//(i-1) for i in hlist]
     for i in range(steps):  #lager liste over feil for gitte steglengder.
@@ -177,7 +180,7 @@ def plotErrorWithMass(steps, L, totalTime, t0):
     ax.set_xlabel("Tidssteg, $h$ (s)",fontsize=15)
     ax.set_ylabel("Error, (m)",fontsize=15) 
     ax.set_xlim([100,400])
-    xAxis = plt.gca().xaxis
+    xAxis = plt.gca().xaxis     #Legger til ekstra ticks på aksene.
     xAxis.set_minor_locator(TSM_C.MinorSymLogLocator(0))
     xAxis.set_minor_formatter(FormatStrFormatter("%.0f"))
     yAxis = plt.gca().yaxis
@@ -201,6 +204,7 @@ def varTimeStepMass(TOL, t0, totalTime, L):
     currentdt = 400
     e=1
     while (currentt < totalTime):
+        #kalkulerer neste steg
         currentY, currentt, currentdt,e = DS.varTimeTrapezoidStep(currentt, currentY, f2, TOL, currentdt,e, totalTime)
         
         Y.append(currentY)
@@ -214,7 +218,7 @@ def plotVarTimeStepMass(TOL, L, totalTime, t0):
     XNum, tNum, dtNum = varTimeStepMass(TOL, t0, totalTime, L)
     XAn = massAn()
     
-    #Størrelse på tidssteg
+    #Plott over størrelse på tidssteg
     plt.figure()
     plt.plot(tNum, dtNum,'o', label='Tidssteg')
     plt.title("Størrelse på tidssteg",fontsize=15)
